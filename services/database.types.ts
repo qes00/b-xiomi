@@ -69,6 +69,8 @@ export interface Database {
                     document_type: string | null;
                     document_number: string | null;
                     role: string | null;
+                    last_password_update: string | null;
+                    password_update_count: number | null;
                     created_at: string;
                 };
                 Insert: {
@@ -79,6 +81,8 @@ export interface Database {
                     document_type?: string | null;
                     document_number?: string | null;
                     role?: string | null;
+                    last_password_update?: string | null;
+                    password_update_count?: number | null;
                     created_at?: string;
                 };
                 Update: {
@@ -88,6 +92,8 @@ export interface Database {
                     document_type?: string | null;
                     document_number?: string | null;
                     role?: string | null;
+                    last_password_update?: string | null;
+                    password_update_count?: number | null;
                 };
             };
             user_addresses: {
