@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { CartItem } from '../types';
 import { formatCurrency, IGV_RATE } from '../constants';
 import { Button } from './Button';
@@ -11,21 +12,27 @@ interface CartSidebarProps {
 }
 
 export const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cart, onRemove }) => {
+  const navigate = useNavigate();
   const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-  
+
   // In Peru, displayed prices usually include IGV. 
   // We calculate the base price by dividing by 1.18
   const basePrice = total / (1 + IGV_RATE);
   const igvAmount = total - basePrice;
 
+  const handleCheckout = () => {
+    onClose();
+    navigate('/checkout');
+  };
+
   return (
     <>
       {/* Overlay */}
-      <div 
+      <div
         className={`${styles.overlay} ${isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
         onClick={onClose}
       />
-      
+
       {/* Sidebar */}
       <div className={`${styles.sidebar.container} ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}>
         <div className={styles.sidebar.header}>
@@ -50,7 +57,7 @@ export const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cart,
                     <span className="text-sm text-stone-700 font-medium">Cant: {item.quantity}</span>
                     <span className="font-bold text-gold-700">{formatCurrency(item.price * item.quantity)}</span>
                   </div>
-                  <button 
+                  <button
                     onClick={() => onRemove(item.id)}
                     className={styles.item.removeBtn}
                   >
@@ -78,8 +85,8 @@ export const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cart,
                 <span>{formatCurrency(total)}</span>
               </div>
             </div>
-            <Button className={styles.footer.button}>
-              Ir a Pagar
+            <Button onClick={handleCheckout} className={styles.footer.button}>
+              Ir a Pagar →
             </Button>
             <p className={styles.footer.disclaimer}>Transacciones seguras procesadas externamente.</p>
           </div>

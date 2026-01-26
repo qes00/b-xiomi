@@ -19,7 +19,10 @@ export const MOCK_PRODUCTS = [
     description: 'Polo básico de alta calidad hecho con el mejor algodón peruano. Fresco y duradero.',
     price: 89.90,
     imageUrl: 'https://picsum.photos/400/400?random=1',
-    category: 'Ropa'
+    category: 'Ropa',
+    brand: 'Pima Cotton Co.',
+    sizes: ['S', 'M', 'L', 'XL'],
+    colors: ['Blanco', 'Negro', 'Azul Marino']
   },
   {
     id: '2',
@@ -27,7 +30,10 @@ export const MOCK_PRODUCTS = [
     description: 'Diseño moderno para caminar por la ciudad. Suela ergonómica.',
     price: 249.50,
     imageUrl: 'https://picsum.photos/400/400?random=2',
-    category: 'Calzado'
+    category: 'Calzado',
+    brand: 'Urban Step',
+    sizes: ['38', '39', '40', '41', '42', '43'],
+    colors: ['Negro', 'Gris', 'Marrón']
   },
   {
     id: '3',
@@ -35,6 +41,51 @@ export const MOCK_PRODUCTS = [
     description: 'Mochila resistente con diseños inspirados en telares tradicionales.',
     price: 120.00,
     imageUrl: 'https://picsum.photos/400/400?random=3',
+  },
+  {
+    id: '4',
+    name: 'Cartera de Cuero Genuino',
+    description: 'Cartera artesanal de cuero peruano. Elegante y durable con múltiples compartimentos.',
+    price: 159.90,
+    imageUrl: 'https://picsum.photos/400/400?random=4',
+    category: 'Accesorios'
+  },
+  {
+    id: '5',
+    name: 'Chompa Alpaca Premium',
+    description: 'Suéter tejido a mano con lana de alpaca 100% natural. Abrigador y suave.',
+    price: 299.00,
+    imageUrl: 'https://picsum.photos/400/400?random=5',
+    category: 'Ropa',
+    brand: 'Alpaca Perú',
+    sizes: ['S', 'M', 'L'],
+    colors: ['Beige', 'Gris', 'Marrón']
+  },
+  {
+    id: '6',
+    name: 'Sombrero de Paja Toquilla',
+    description: 'Sombrero tradicional tejido a mano. Perfecto para el sol.',
+    price: 79.90,
+    imageUrl: 'https://picsum.photos/400/400?random=6',
+    category: 'Accesorios'
+  },
+  {
+    id: '7',
+    name: 'Pantalón Denim Nacional',
+    description: 'Jean de corte moderno con tela resistente. Diseño casual urbano.',
+    price: 189.50,
+    imageUrl: 'https://picsum.photos/400/400?random=7',
+    category: 'Ropa',
+    brand: 'Denim Nacional',
+    sizes: ['28', '30', '32', '34', '36'],
+    colors: ['Azul', 'Negro']
+  },
+  {
+    id: '8',
+    name: 'Billetera Minimalista',
+    description: 'Billetera compacta de cuero genuino con diseño slim.',
+    price: 69.90,
+    imageUrl: 'https://picsum.photos/400/400?random=8',
     category: 'Accesorios'
   }
 ];

@@ -1,29 +1,70 @@
-import { GoogleGenAI } from "@google/genai";
+/**
+ * Servicio de generación de descripciones de productos
+ * Versión sin dependencias externas - genera descripciones predeterminadas
+ */
 
-// Inicializar cliente. En producción real, esto debería estar proxied por el backend
-// para no exponer la API KEY, pero para este ejercicio Frontend-heavy se usa process.env.
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY || '' });
+// Plantillas de descripciones por categoría
+const descriptionTemplates: Record<string, string[]> = {
+  'Ropa': [
+    '✨ Confeccionado con materiales de primera calidad. Diseño moderno que combina comodidad y estilo peruano.',
+    '🌟 Prenda premium con acabados de alta costura. Ideal para el día a día con elegancia.',
+    '💫 Calidad superior y confort garantizado. Diseño exclusivo que realza tu estilo personal.',
+  ],
+  'Calzado': [
+    '👟 Diseño ergonómico para máxima comodidad. Suela duradera y estilo urbano moderno.',
+    '✨ Calzado premium con tecnología de amortiguación. Perfecto para largas caminatas.',
+    '🌟 Materiales de alta calidad y diseño vanguardista. Comodidad todo el día.',
+  ],
+  'Accesorios': [
+    '💎 Accesorio elegante que complementa cualquier outfit. Materiales duraderos y diseño sofisticado.',
+    '✨ Artículo premium con acabados de alta calidad. Estilo que marca la diferencia.',
+    '🌟 Diseño exclusivo inspirado en la artesanía peruana. Elegancia y funcionalidad.',
+  ],
+  'Tecnología': [
+    '📱 Tecnología de última generación con funciones avanzadas. Rendimiento superior garantizado.',
+    '⚡ Dispositivo potente y eficiente. Diseño moderno con las mejores prestaciones.',
+    '🔌 Innovación y calidad en cada detalle. La mejor inversión en tecnología.',
+  ],
+  'default': [
+    '✨ Producto de alta calidad seleccionado especialmente para ti. Satisfacción garantizada.',
+    '🌟 Excelente relación calidad-precio. Diseño pensado para el consumidor peruano moderno.',
+    '💫 Artículo premium con los mejores estándares de calidad. ¡No te arrepentirás!',
+  ]
+};
 
+/**
+ * Genera una descripción para un producto basada en su nombre y categoría
+ * Esta versión no usa APIs externas, genera descripciones predefinidas.
+ */
 export const generateSmartDescription = async (productName: string, category: string): Promise<string> => {
-  try {
-    const model = 'gemini-2.5-flash-latest'; 
-    const prompt = `
-      Actúa como un copywriter experto en e-commerce para una tienda peruana.
-      Escribe una descripción corta (máximo 40 palabras), atractiva y vendedora para un producto.
-      Nombre: ${productName}
-      Categoría: ${category}
-      
-      Usa un tono amigable y profesional. Incluye emojis sutiles.
-    `;
+  // Simular un pequeño delay para mejor UX
+  await new Promise(resolve => setTimeout(resolve, 300));
 
-    const response = await ai.models.generateContent({
-      model: model,
-      contents: prompt,
-    });
+  // Obtener plantillas de la categoría o usar default
+  const templates = descriptionTemplates[category] || descriptionTemplates['default'];
 
-    return response.text || "No se pudo generar la descripción.";
-  } catch (error) {
-    console.error("Error generating description with Gemini:", error);
-    throw new Error("Falló la generación de IA");
+  // Seleccionar una plantilla aleatoria
+  const randomIndex = Math.floor(Math.random() * templates.length);
+  let description = templates[randomIndex];
+
+  // Personalizar con el nombre del producto si es posible
+  if (productName.length > 3) {
+    const productTerms = productName.split(' ').filter(t => t.length > 2);
+    if (productTerms.length > 0) {
+      // Agregar mención del producto al inicio ocasionalmente
+      if (Math.random() > 0.5) {
+        description = `${productTerms[0]} de excelente calidad. ${description}`;
+      }
+    }
   }
+
+  return description;
+};
+
+/**
+ * Verifica si el servicio de IA está disponible
+ * En esta versión siempre retorna true ya que no depende de APIs externas
+ */
+export const isAIServiceAvailable = (): boolean => {
+  return true;
 };

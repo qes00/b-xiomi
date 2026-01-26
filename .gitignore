@@ -22,3 +22,15 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Environment and secrets (CRITICAL - never commit)
+.env
+.env.*
+!.env.example
+config/api-keys.php
+
+# Build artifacts
+*.tsbuildinfo
+
+# Local Netlify folder
+.netlify

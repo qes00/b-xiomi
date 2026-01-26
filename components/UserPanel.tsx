@@ -1,46 +1,56 @@
-import React, { useState } from 'react';
-import { UserProfile, CartItem, PaymentMethod, UserAddress } from '../types';
+import React, { useState, useEffect } from 'react';
+import { UserProfile, CartItem, UserAddress } from '../types';
 import { Button } from './Button';
 import { formatCurrency } from '../constants';
 import { useNavigate } from 'react-router-dom';
+import { MyOrders } from './MyOrders';
+import { useAuthStore } from '../stores/authStore';
+import { getUserProfile } from '../services/userService';
 
 interface UserPanelProps {
   cart: CartItem[];
 }
 
-const MOCK_USER: UserProfile = {
-  firstName: 'Juan',
-  lastName: 'Pérez',
-  email: 'juan.perez@example.com',
-  phone: '987654321',
-  documentType: 'DNI',
-  documentNumber: '45678912',
-  addresses: [
-    {
-      id: '1',
-      department: 'Lima',
-      province: 'Lima',
-      district: 'Miraflores',
-      street: 'Av. Larco 123, Dpto 401',
-      reference: 'Frente al parque Kennedy'
-    }
-  ],
-  savedCards: [
-    {
-      id: 'c1',
-      brand: 'visa',
-      last4: '4242',
-      token: 'tok_secure_aes256_xyz123',
-      expiry: '12/25'
-    }
-  ]
-};
 
 const UserPanel: React.FC<UserPanelProps> = ({ cart }) => {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState<'profile' | 'shipping' | 'payment' | 'security' | 'cart'>('profile');
-  const [user, setUser] = useState<UserProfile>(MOCK_USER);
+  const [activeTab, setActiveTab] = useState<'profile' | 'orders' | 'shipping' | 'security' | 'cart'>('profile');
+  const authUser = useAuthStore(state => state.user);
+  
+  // User profile state - inicializa con datos del authStore
+  const [user, setUser] = useState<UserProfile>({
+    firstName: authUser?.firstName || '',
+    lastName: authUser?.lastName || '',
+    email: authUser?.email || '',
+    phone: authUser?.phone || '',
+    documentType: 'DNI',
+    documentNumber: '',
+    addresses: []
+  });
+  
   const [isEditing, setIsEditing] = useState(false);
+
+  // Cargar perfil completo del usuario desde Supabase
+  useEffect(() => {
+    const loadUserProfile = async () => {
+      if (!authUser?.id) return;
+      
+      const profile = await getUserProfile(authUser.id);
+      if (profile) {
+        setUser({
+          firstName: profile.firstName || authUser.firstName,
+          lastName: profile.lastName || authUser.lastName,
+          email: profile.email || authUser.email,
+          phone: profile.phone || authUser.phone,
+          documentType: profile.documentType || 'DNI',
+          documentNumber: profile.documentNumber || '',
+          addresses: profile.addresses || []
+        });
+      }
+    };
+    
+    loadUserProfile();
+  }, [authUser]);
 
   // Password State
   const [passwordForm, setPasswordForm] = useState({
@@ -55,20 +65,7 @@ const UserPanel: React.FC<UserPanelProps> = ({ cart }) => {
     alert("Datos actualizados correctamente.");
   };
 
-  const handleAddCard = () => {
-    alert("Iniciando conexión segura TLS 1.3 con pasarela de pagos...");
-    setTimeout(() => {
-      const newCard: PaymentMethod = {
-        id: Math.random().toString(36).substr(2, 9),
-        brand: 'mastercard',
-        last4: '8899',
-        token: `tok_${Math.random().toString(36).substr(2)}`,
-        expiry: '09/26'
-      };
-      setUser(prev => ({ ...prev, savedCards: [...prev.savedCards, newCard] }));
-      alert("Tarjeta tokenizada y guardada exitosamente.");
-    }, 1500);
-  };
+
 
   const handlePasswordChange = (e: React.FormEvent) => {
     e.preventDefault();
@@ -80,7 +77,7 @@ const UserPanel: React.FC<UserPanelProps> = ({ cart }) => {
       alert("Las nuevas contraseñas no coinciden.");
       return;
     }
-    
+
     alert("Procesando encriptación bcrypt...");
     setTimeout(() => {
       alert("Tu contraseña ha sido actualizada correctamente.");
@@ -98,7 +95,7 @@ const UserPanel: React.FC<UserPanelProps> = ({ cart }) => {
       setTimeout(() => {
         alert("Tu cuenta ha sido eliminada. Lamentamos verte partir.");
         navigate('/');
-        window.location.reload(); 
+        window.location.reload();
       }, 1500);
     }
   };
@@ -121,13 +118,13 @@ const UserPanel: React.FC<UserPanelProps> = ({ cart }) => {
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
           Datos Personales
         </button>
+        <button onClick={() => setActiveTab('orders')} className={getTabStyle(activeTab === 'orders')}>
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
+          Mis Pedidos
+        </button>
         <button onClick={() => setActiveTab('shipping')} className={getTabStyle(activeTab === 'shipping')}>
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
           Direcciones de Envío
-        </button>
-        <button onClick={() => setActiveTab('payment')} className={getTabStyle(activeTab === 'payment')}>
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>
-          Métodos de Pago
         </button>
         <button onClick={() => setActiveTab('security')} className={getTabStyle(activeTab === 'security')}>
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
@@ -136,7 +133,7 @@ const UserPanel: React.FC<UserPanelProps> = ({ cart }) => {
         <button onClick={() => setActiveTab('cart')} className={getTabStyle(activeTab === 'cart')}>
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
           Mi Carrito Activo
-          {cart.length > 0 && <span className={styles.sidebar.cartBadge}>{cart.reduce((a,c) => a + c.quantity, 0)}</span>}
+          {cart.length > 0 && <span className={styles.sidebar.cartBadge}>{cart.reduce((a, c) => a + c.quantity, 0)}</span>}
         </button>
       </nav>
     </div>
@@ -145,11 +142,13 @@ const UserPanel: React.FC<UserPanelProps> = ({ cart }) => {
   return (
     <div className={styles.layout.container}>
       <h1 className={styles.layout.title}>Mi Cuenta</h1>
-      
+
       <div className={styles.layout.grid}>
         {renderSidebar()}
-        
+
         <div className="flex-1">
+          {activeTab === 'orders' && <MyOrders userId="current-user" />}
+
           {activeTab === 'profile' && (
             <div className={styles.card.container}>
               <div className={styles.card.header}>
@@ -158,7 +157,7 @@ const UserPanel: React.FC<UserPanelProps> = ({ cart }) => {
                   {isEditing ? 'Cancelar' : 'Editar Datos'}
                 </Button>
               </div>
-              
+
               <form onSubmit={handleSaveProfile} className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label className={styles.form.label}>Nombres</label>
@@ -185,7 +184,7 @@ const UserPanel: React.FC<UserPanelProps> = ({ cart }) => {
                   <input type="email" disabled defaultValue={user.email} className={styles.form.disabledInput} />
                   <p className="text-xs text-stone-500 mt-1">Para cambiar tu correo, contacta a soporte.</p>
                 </div>
-                
+
                 {isEditing && (
                   <div className="md:col-span-2 flex justify-end">
                     <Button type="submit">Guardar Cambios</Button>
@@ -224,104 +223,64 @@ const UserPanel: React.FC<UserPanelProps> = ({ cart }) => {
             </div>
           )}
 
-          {activeTab === 'payment' && (
-            <div className={styles.card.container}>
-              <h2 className={`${styles.card.title} mb-4`}>Billetera Segura</h2>
-              <div className={styles.security.box}>
-                <div className="flex">
-                  <div className="flex-shrink-0">
-                    <svg className="h-5 w-5 text-gold-500" viewBox="0 0 20 20" fill="currentColor">
-                      <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-                    </svg>
-                  </div>
-                  <div className="ml-3">
-                    <p className="text-sm text-black font-medium">
-                      Tus tarjetas son almacenadas de forma segura mediante <strong>Tokenización</strong>. 
-                      No guardamos los números de tarjeta en nuestros servidores. (Evitamos MD5/SHA1 obsoletos, usamos TLS 1.3).
-                    </p>
-                  </div>
-                </div>
-              </div>
 
-              <div className="space-y-4 mb-6">
-                {user.savedCards.map(card => (
-                  <div key={card.id} className={styles.cardList.item}>
-                    <div className="flex items-center gap-4">
-                      <div className={styles.cardList.brand}>
-                        {card.brand}
-                      </div>
-                      <div>
-                        <p className="font-mono text-stone-800 font-bold">•••• •••• •••• {card.last4}</p>
-                        <p className="text-xs text-stone-600 font-medium">Expira: {card.expiry}</p>
-                      </div>
-                    </div>
-                    <span className={styles.cardList.token}>Token: {card.token.substr(0,8)}...</span>
-                  </div>
-                ))}
-              </div>
-
-              <Button onClick={handleAddCard} className="w-full sm:w-auto">
-                + Agregar Tarjeta (Integración Segura)
-              </Button>
-            </div>
-          )}
 
           {activeTab === 'security' && (
-             <div className={styles.card.container}>
-               <h2 className={`${styles.card.title} mb-6`}>Gestión de Contraseña</h2>
-               
-               <form onSubmit={handlePasswordChange} className="max-w-md space-y-4 mb-12">
-                 <div>
-                   <label className={styles.form.label}>Contraseña Actual</label>
-                   <input 
-                    type="password" 
+            <div className={styles.card.container}>
+              <h2 className={`${styles.card.title} mb-6`}>Gestión de Contraseña</h2>
+
+              <form onSubmit={handlePasswordChange} className="max-w-md space-y-4 mb-12">
+                <div>
+                  <label className={styles.form.label}>Contraseña Actual</label>
+                  <input
+                    type="password"
                     required
                     value={passwordForm.current}
-                    onChange={(e) => setPasswordForm({...passwordForm, current: e.target.value})}
-                    className={styles.form.input} 
-                   />
-                 </div>
-                 <div>
-                   <label className={styles.form.label}>Nueva Contraseña</label>
-                   <input 
-                    type="password" 
+                    onChange={(e) => setPasswordForm({ ...passwordForm, current: e.target.value })}
+                    className={styles.form.input}
+                  />
+                </div>
+                <div>
+                  <label className={styles.form.label}>Nueva Contraseña</label>
+                  <input
+                    type="password"
                     required
                     minLength={8}
                     value={passwordForm.new}
-                    onChange={(e) => setPasswordForm({...passwordForm, new: e.target.value})}
-                    className={styles.form.input} 
-                   />
-                   <p className="text-xs text-stone-500 mt-1 font-medium">Mínimo 8 caracteres.</p>
-                 </div>
-                 <div>
-                   <label className={styles.form.label}>Confirmar Nueva Contraseña</label>
-                   <input 
-                    type="password" 
+                    onChange={(e) => setPasswordForm({ ...passwordForm, new: e.target.value })}
+                    className={styles.form.input}
+                  />
+                  <p className="text-xs text-stone-500 mt-1 font-medium">Mínimo 8 caracteres.</p>
+                </div>
+                <div>
+                  <label className={styles.form.label}>Confirmar Nueva Contraseña</label>
+                  <input
+                    type="password"
                     required
                     minLength={8}
                     value={passwordForm.confirm}
-                    onChange={(e) => setPasswordForm({...passwordForm, confirm: e.target.value})}
-                    className={styles.form.input} 
-                   />
-                 </div>
-                 <Button type="submit">Actualizar Contraseña</Button>
-               </form>
+                    onChange={(e) => setPasswordForm({ ...passwordForm, confirm: e.target.value })}
+                    className={styles.form.input}
+                  />
+                </div>
+                <Button type="submit">Actualizar Contraseña</Button>
+              </form>
 
-               <div className="border-t border-stone-200 pt-8">
-                 <h2 className="text-xl font-bold text-red-700 mb-4">Zona de Peligro</h2>
-                 <div className={styles.dangerZone.container}>
-                   <div>
-                     <h3 className="font-bold text-red-900">Eliminar Cuenta</h3>
-                     <p className="text-sm text-red-700 mt-1 max-w-lg font-medium">
-                       Al eliminar tu cuenta, se borrarán todos tus datos personales, direcciones guardadas, métodos de pago e historial de pedidos. Esta acción <strong>no se puede deshacer</strong>.
-                     </p>
-                   </div>
-                   <Button variant="danger" onClick={handleDeleteAccount}>
-                     Eliminar mi Cuenta
-                   </Button>
-                 </div>
-               </div>
-             </div>
+              <div className="border-t border-stone-200 pt-8">
+                <h2 className="text-xl font-bold text-red-700 mb-4">Zona de Peligro</h2>
+                <div className={styles.dangerZone.container}>
+                  <div>
+                    <h3 className="font-bold text-red-900">Eliminar Cuenta</h3>
+                    <p className="text-sm text-red-700 mt-1 max-w-lg font-medium">
+                      Al eliminar tu cuenta, se borrarán todos tus datos personales, direcciones guardadas, métodos de pago e historial de pedidos. Esta acción <strong>no se puede deshacer</strong>.
+                    </p>
+                  </div>
+                  <Button variant="danger" onClick={handleDeleteAccount}>
+                    Eliminar mi Cuenta
+                  </Button>
+                </div>
+              </div>
+            </div>
           )}
 
           {activeTab === 'cart' && (
@@ -363,9 +322,8 @@ const UserPanel: React.FC<UserPanelProps> = ({ cart }) => {
 
 // --- Styles & Helpers ---
 
-const getTabStyle = (isActive: boolean) => 
-  `w-full text-left px-4 py-3 rounded-lg text-sm font-medium transition-colors flex items-center gap-3 ${
-    isActive ? 'bg-gold-100 text-black font-bold' : 'text-stone-700 hover:bg-stone-50'
+const getTabStyle = (isActive: boolean) =>
+  `w-full text-left px-4 py-3 rounded-lg text-sm font-medium transition-colors flex items-center gap-3 ${isActive ? 'bg-gold-100 text-black font-bold' : 'text-stone-700 hover:bg-stone-50'
   }`;
 
 const styles = {

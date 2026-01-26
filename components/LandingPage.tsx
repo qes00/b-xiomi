@@ -1,208 +1,311 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { Button } from './Button';
-import { MOCK_PRODUCTS, formatCurrency } from '../constants';
+import { formatCurrency } from '../constants';
+import { getFeaturedProducts } from '../services/productService';
+import { Product } from '../types';
+import { ProductCard } from './ProductCard';
+import { ProductViewer } from './ProductViewer';
+import { useCartStore } from '../stores/cartStore';
+
+const CarouselSection: React.FC = () => {
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  const slides = [
+    {
+      id: 1,
+      image: "https://images.unsplash.com/photo-1541099649105-f69ad21f3246?q=80&w=1287&auto=format&fit=crop",
+      title: "Colección Mujer",
+      subtitle: "Elegancia y confort en cada prenda",
+      link: "/shop?category=Mujer"
+    },
+    {
+      id: 2,
+      image: "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=2070&auto=format&fit=crop",
+      title: "Nueva Temporada",
+      subtitle: "Descubre lo último en moda peruana",
+      link: "/shop"
+    },
+    {
+      id: 3,
+      image: "https://images.unsplash.com/photo-1445205170230-053b83016050?q=80&w=1471&auto=format&fit=crop",
+      title: "Abrigos de Alpaca",
+      subtitle: "Calidez natural para este invierno",
+      link: "/shop"
+    }
+  ];
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % slides.length);
+    }, 5000);
+    return () => clearInterval(timer);
+  }, [slides.length]);
+
+  const nextSlide = () => setCurrentSlide((prev) => (prev + 1) % slides.length);
+  const prevSlide = () => setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
+
+  return (
+    <section className="relative w-full h-[600px] overflow-hidden bg-[#0f1c29]">
+      {slides.map((slide, index) => (
+        <div
+          key={slide.id}
+          className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${index === currentSlide ? 'opacity-100 z-10' : 'opacity-0 z-0'
+            }`}
+        >
+          <img
+            src={slide.image}
+            alt={slide.title}
+            className="w-full h-full object-cover opacity-60"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#0f1c29] via-transparent to-transparent" />
+
+          <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-6">
+            <span className="text-gold-400 tracking-[0.3em] uppercase text-sm font-bold mb-4 animate-fade-in-up">
+              {slide.subtitle}
+            </span>
+            <h2 className="text-5xl md:text-7xl font-serif text-white mb-8 italic animate-fade-in-up stagger-1">
+              {slide.title}
+            </h2>
+            <Link
+              to={slide.link}
+              className="px-8 py-3 border border-white text-white hover:bg-white hover:text-[#0f1c29] transition-colors uppercase tracking-widest text-xs font-bold animate-fade-in-up stagger-2"
+            >
+              Ver Colección
+            </Link>
+          </div>
+        </div>
+      ))}
+
+      {/* Controls */}
+      <button
+        onClick={prevSlide}
+        className="absolute left-4 top-1/2 -translate-y-1/2 z-20 w-12 h-12 flex items-center justify-center rounded-full border border-white/20 text-white hover:bg-white hover:text-[#0f1c29] transition-all"
+      >
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" /></svg>
+      </button>
+      <button
+        onClick={nextSlide}
+        className="absolute right-4 top-1/2 -translate-y-1/2 z-20 w-12 h-12 flex items-center justify-center rounded-full border border-white/20 text-white hover:bg-white hover:text-[#0f1c29] transition-all"
+      >
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" /></svg>
+      </button>
+
+      {/* Dots */}
+      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex gap-3">
+        {slides.map((_, idx) => (
+          <button
+            key={idx}
+            onClick={() => setCurrentSlide(idx)}
+            className={`w-2 h-2 rounded-full transition-all ${idx === currentSlide ? 'bg-gold-500 w-8' : 'bg-white/50 hover:bg-white'
+              }`}
+          />
+        ))}
+      </div>
+    </section>
+  );
+};
 
 export const LandingPage: React.FC = () => {
+  const navigate = useNavigate();
+  const { addItem, openCart } = useCartStore();
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [viewingProduct, setViewingProduct] = useState<Product | null>(null);
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  const handleAddToCart = (product: Product, quantity: number = 1) => {
+    for (let i = 0; i < quantity; i++) {
+      addItem(product);
+    }
+    openCart();
+  };
+
+  const nextProducts = () => {
+    if (currentIndex < products.length - 4) {
+      setCurrentIndex(prev => prev + 1);
+    }
+  };
+
+  const prevProducts = () => {
+    if (currentIndex > 0) {
+      setCurrentIndex(prev => prev - 1);
+    }
+  };
+
+  useEffect(() => {
+    const loadProducts = async () => {
+      try {
+        const data = await getFeaturedProducts();
+        setProducts(data);
+      } catch (error) {
+        console.error('Error cargando productos:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadProducts();
+  }, []);
+
   return (
     <div className={styles.wrapper}>
-      {/* Hero Section */}
+      {/* Hero Section - Denim & Gold */}
       <section className={styles.hero.section}>
-        <div className={styles.hero.bgPattern} />
-        <div className={styles.hero.bgOverlay} />
-        
+        <div className={styles.hero.overlay} />
         <div className={styles.hero.content}>
           <span className={styles.hero.badge}>
-            ✨ Nuevos ingresos de temporada
+            Nueva Colección 2026
           </span>
+
           <h1 className={styles.hero.title}>
-            Lo Mejor del Perú <br className="hidden md:block" />
-            <span className={styles.hero.highlight}>Para el Mundo</span>
+            <span className="block font-serif italic text-gold-400">Elegancia</span>
+            <span className="block text-white tracking-widest uppercase text-6xl md:text-8xl mt-2 mb-4">Peruana</span>
+            <span className="block text-xl md:text-2xl font-light text-bone/90 tracking-widest font-sans">PARA EL MUNDO</span>
           </h1>
+
           <p className={styles.hero.description}>
-            Descubre nuestra colección exclusiva de productos artesanales, moda y tecnología con sello peruano. Calidad garantizada y envíos seguros a nivel nacional.
+            Exquisita manufactura en algodón pima y denim. La fusión perfecta entre la tradición textil peruana y el diseño contemporáneo.
           </p>
+
           <div className={styles.hero.actions}>
-            <Link to="/shop" className="w-full sm:w-auto">
-              <Button className={styles.hero.primaryBtn}>Explorar Tienda</Button>
+            <Link to="/shop">
+              <button className={styles.hero.primaryBtn}>
+                Explorar Colección
+              </button>
             </Link>
-            <Link to="/profile" className="w-full sm:w-auto">
-              <Button variant="outline" className={styles.hero.secondaryBtn}>
-                Mi Cuenta
-              </Button>
-            </Link>
+          </div>
+        </div>
+
+        {/* Denim Stitching Detail Bottom */}
+        <div className="absolute bottom-4 left-0 w-full h-px bg-gold-500/50" />
+        <div className="absolute bottom-6 left-0 w-full h-px bg-gold-500/50" />
+      </section>
+
+      {/* Featured Carousel Section */}
+      <CarouselSection />
+
+      {/* Product Showcase */}
+      <section className={styles.products.section}>
+        <div className={styles.products.container}>
+          <div className="text-center mb-16 relative">
+            <span className="text-gold-600 font-bold uppercase tracking-[0.2em] text-sm md:text-base">Lo mejor de la temporada</span>
+            <h2 className="text-4xl md:text-5xl font-serif text-[#0f1c29] mt-3">Productos Destacados</h2>
+            {/* Decorative element */}
+            <div className="w-24 h-1 bg-gold-400 mx-auto mt-6" />
+          </div>
+
+          <div className="relative">
+            {loading ? (
+              <div className="text-center py-12">
+                <div className="animate-spin w-8 h-8 border-4 border-gold-500 border-t-transparent rounded-full mx-auto mb-4"></div>
+                <p className="text-stone-600">Cargando productos destacados...</p>
+              </div>
+            ) : products.length === 0 ? (
+              <div className="text-center py-12">
+                <p className="text-stone-600">No hay productos destacados disponibles</p>
+                <Link to="/shop" className="text-gold-600 hover:underline mt-2 inline-block">Ver tienda</Link>
+              </div>
+            ) : (
+              <>
+                {/* Carousel Container */}
+                <div className="overflow-hidden">
+                  <div 
+                    className="flex transition-transform duration-500 ease-out gap-8"
+                    style={{ transform: `translateX(-${currentIndex * (100 / 4)}%)` }}
+                  >
+                    {products.map((product) => (
+                      <div key={product.id} className="flex-shrink-0" style={{ width: 'calc(25% - 24px)' }}>
+                        <ProductCard
+                          product={product}
+                          onAddToCart={(p) => handleAddToCart(p, 1)}
+                          onViewProduct={setViewingProduct}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Navigation Buttons */}
+                {products.length > 4 && (
+                  <>
+                    <button
+                      onClick={prevProducts}
+                      disabled={currentIndex === 0}
+                      className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center text-[#0f1c29] hover:bg-gold-400 hover:text-white transition-all disabled:opacity-30 disabled:cursor-not-allowed z-10"
+                    >
+                      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" /></svg>
+                    </button>
+                    <button
+                      onClick={nextProducts}
+                      disabled={currentIndex >= products.length - 4}
+                      className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center text-[#0f1c29] hover:bg-gold-400 hover:text-white transition-all disabled:opacity-30 disabled:cursor-not-allowed z-10"
+                    >
+                      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" /></svg>
+                    </button>
+                  </>
+                )}
+              </>
+            )}
           </div>
         </div>
       </section>
 
-      {/* Features Section */}
-      <section className={styles.features.section}>
-        <div className={styles.features.container}>
-          <div className={styles.features.header}>
-            <h2 className={styles.features.title}>¿Por qué elegirnos?</h2>
-            <p className={styles.features.subtitle}>Comprometidos con la excelencia y tu satisfacción.</p>
-          </div>
-          
-          <div className={styles.features.grid}>
-            {/* Feature 1 */}
-            <div className={styles.features.card}>
-              <div className={styles.features.iconWrapper}>
-                <svg className={styles.features.icon} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg>
-              </div>
-              <h3 className={styles.features.cardTitle}>Calidad Premium</h3>
-              <p className={styles.features.cardDesc}>Algodón Pima, cuero legítimo y acabados de primera. Seleccionamos rigurosamente cada producto.</p>
-            </div>
-            
-            {/* Feature 2 */}
-            <div className={styles.features.card}>
-              <div className={styles.features.iconWrapper}>
-                <svg className={styles.features.icon} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-              </div>
-              <h3 className={styles.features.cardTitle}>Envíos Rápidos</h3>
-              <p className={styles.features.cardDesc}>Entrega en 24h para Lima Metropolitana y 48h para provincias. Seguimiento en tiempo real.</p>
-            </div>
-            
-            {/* Feature 3 */}
-            <div className={styles.features.card}>
-              <div className={styles.features.iconWrapper}>
-                <svg className={styles.features.icon} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
-              </div>
-              <h3 className={styles.features.cardTitle}>Compra Segura</h3>
-              <p className={styles.features.cardDesc}>Tus datos están protegidos con encriptación TLS 1.3 y pasarelas de pago certificadas.</p>
-            </div>
-          </div>
-        </div>
-      </section>
 
-      {/* Featured Products Preview */}
-      <section className={styles.preview.section}>
-        <div className={styles.preview.container}>
-          <div className={styles.preview.header}>
-            <div>
-              <span className={styles.preview.label}>Favoritos</span>
-              <h2 className={styles.preview.title}>Productos Destacados</h2>
-            </div>
-            <Link to="/shop" className={styles.preview.link}>
-              Ver catálogo completo 
-              <svg className={styles.preview.arrow} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
-            </Link>
-          </div>
-          
-          <div className={styles.preview.grid}>
-            {MOCK_PRODUCTS.slice(0, 3).map(product => (
-               <div key={product.id} className={styles.preview.card}>
-                 <div className={styles.preview.imageContainer}>
-                   <img 
-                    src={product.imageUrl} 
-                    alt={product.name} 
-                    className={styles.preview.image} 
-                   />
-                   <div className={styles.preview.badge}>
-                      Tendencia
-                   </div>
-                 </div>
-                 <div className={styles.preview.content}>
-                   <p className={styles.preview.category}>{product.category}</p>
-                   <h3 className={styles.preview.productName}>{product.name}</h3>
-                   <div className={styles.preview.footer}>
-                     <p className={styles.preview.price}>{formatCurrency(product.price)}</p>
-                     <Link to="/shop">
-                        <button className={styles.preview.detailsBtn}>Ver detalles</button>
-                     </Link>
-                   </div>
-                 </div>
-               </div>
-            ))}
-          </div>
-        </div>
-      </section>
+      {/* Denim Texture Banner */}
+      <section className="py-24 relative bg-[#2a4f6e] overflow-hidden">
+        {/* Texture overlay simulation */}
+        <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'url("https://www.transparenttextures.com/patterns/denim.png")' }}></div>
 
-      {/* Newsletter */}
-      <section className={styles.newsletter.section}>
-        <div className={styles.newsletter.blob1}></div>
-        <div className={styles.newsletter.blob2}></div>
-        
-        <div className={styles.newsletter.content}>
-          <h2 className={styles.newsletter.title}>Únete a nuestra comunidad</h2>
-          <p className={styles.newsletter.text}>
-            Suscríbete para recibir ofertas exclusivas, novedades y descuentos especiales directamente en tu correo.
+        <div className="relative z-10 max-w-4xl mx-auto text-center px-6">
+          <h2 className="text-4xl md:text-5xl font-serif text-white mb-6">Únete al Club VIP</h2>
+          <p className="text-stone-200 text-lg mb-10 font-light max-w-2xl mx-auto">
+            Recibe noticias sobre nuestras colecciones de edición limitada y descuentos exclusivos directamente en tu correo.
           </p>
-          <form className={styles.newsletter.form} onSubmit={(e) => e.preventDefault()}>
-            <input 
-              type="email" 
-              placeholder="Tu correo electrónico" 
-              className={styles.newsletter.input}
-              required
+
+          <form className="flex flex-col sm:flex-row gap-4 justify-center max-w-lg mx-auto" onSubmit={(e) => e.preventDefault()}>
+            <input
+              type="email"
+              placeholder="Tu correo electrónico"
+              className="flex-1 px-6 py-4 bg-white/10 border border-white/20 text-white placeholder-white/60 focus:outline-none focus:border-gold-400 focus:bg-white/20 transition-all backdrop-blur-sm"
             />
-            <Button className={styles.newsletter.button}>Suscribirse</Button>
+            <button type="submit" className="px-8 py-4 bg-gold-500 text-white font-bold uppercase tracking-widest hover:bg-gold-600 transition-colors shadow-lg hover:shadow-gold/50">
+              Suscribirse
+            </button>
           </form>
-          <p className={styles.newsletter.disclaimer}>Respetamos tu privacidad. Date de baja cuando quieras.</p>
         </div>
       </section>
+      <ProductViewer
+        product={viewingProduct}
+        products={products}
+        isOpen={viewingProduct !== null}
+        onClose={() => setViewingProduct(null)}
+        onAddToCart={handleAddToCart}
+        onSwitchProduct={setViewingProduct}
+      />
     </div>
   );
 };
 
-// --- Styles Separation ---
 const styles = {
-  wrapper: "flex flex-col w-full",
+  wrapper: "flex flex-col w-full overflow-x-hidden bg-white",
+
   hero: {
-    section: "relative bg-gold-500 text-black py-24 px-4 sm:px-6 lg:px-8 overflow-hidden",
-    bgPattern: "absolute inset-0 opacity-10 bg-[url('https://images.unsplash.com/photo-1556905055-8f358a7a47b2?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80')] bg-cover bg-center",
-    bgOverlay: "absolute inset-0 bg-gradient-to-r from-gold-500 to-gold-400 opacity-90",
-    content: "relative max-w-7xl mx-auto flex flex-col items-center text-center z-10",
-    badge: "inline-block py-1 px-3 rounded-full bg-black/10 border border-black/20 text-black text-sm font-bold mb-6 animate-fade-in-up",
-    title: "text-4xl md:text-6xl font-extrabold tracking-tight mb-6 leading-tight text-black",
-    // Changed to text-black for contrast per user request
-    highlight: "text-black drop-shadow-sm", 
-    description: "text-lg md:text-xl text-black/80 max-w-2xl mb-10 leading-relaxed font-semibold",
-    actions: "flex flex-col sm:flex-row gap-4 w-full sm:w-auto",
-    primaryBtn: "w-full py-4 text-lg px-8 shadow-xl bg-black text-gold-500 hover:bg-stone-900 border-none",
-    secondaryBtn: "w-full py-4 text-lg px-8 border-black text-black hover:bg-black hover:text-gold-500"
+    section: "relative min-h-screen flex items-center justify-center overflow-hidden bg-[#1e3850]",
+    overlay: "absolute inset-0 bg-[url('https://images.unsplash.com/photo-1582533036425-4c6e94e9f545?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center opacity-40 mix-blend-overlay",
+    content: "relative z-10 max-w-5xl mx-auto px-6 text-center flex flex-col items-center",
+    badge: "inline-block py-1 px-4 border border-gold-400 text-gold-400 text-xs font-bold uppercase tracking-[0.3em] mb-6",
+    title: "mb-8",
+    description: "text-lg text-bone/80 max-w-2xl mx-auto mb-12 font-light leading-relaxed",
+    actions: "flex flex-col sm:flex-row gap-4 justify-center",
+    primaryBtn: "px-10 py-4 bg-gold-500 text-white font-bold uppercase tracking-widest text-sm hover:bg-gold-600 transition-all shadow-lg hover:shadow-gold/30 hover:-translate-y-1",
   },
-  features: {
-    section: "py-20 bg-[#fbfaf6]",
-    container: "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8",
-    header: "text-center mb-16",
-    title: "text-3xl font-bold text-black",
-    subtitle: "text-stone-800 font-medium mt-2",
-    grid: "grid grid-cols-1 md:grid-cols-3 gap-10",
-    card: "flex flex-col items-center text-center p-8 rounded-2xl bg-white border border-stone-200 transition-transform hover:-translate-y-1 hover:shadow-lg",
-    iconWrapper: "w-16 h-16 bg-gold-100 text-gold-700 rounded-full flex items-center justify-center mb-6 shadow-sm",
-    icon: "w-8 h-8",
-    cardTitle: "text-xl font-bold text-black mb-3",
-    cardDesc: "text-stone-800 font-medium leading-relaxed"
-  },
-  preview: {
-    section: "py-20 bg-bone",
-    container: "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8",
-    header: "flex flex-col sm:flex-row justify-between items-end mb-10 gap-4",
-    label: "text-gold-700 font-bold tracking-wide uppercase text-sm",
-    title: "text-3xl font-bold text-black mt-1",
-    link: "group text-gold-700 font-bold hover:text-gold-900 flex items-center gap-1 transition-colors",
-    arrow: "w-4 h-4 transform group-hover:translate-x-1 transition-transform",
-    grid: "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8",
-    card: "bg-white rounded-xl shadow-sm border border-stone-200 overflow-hidden hover:shadow-xl transition-all duration-300 group",
-    imageContainer: "h-56 overflow-hidden bg-gray-100 relative",
-    image: "w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500",
-    badge: "absolute top-3 right-3 bg-white/95 backdrop-blur px-2 py-1 rounded text-xs font-bold text-black shadow-sm border border-stone-100",
-    content: "p-6",
-    category: "text-xs text-stone-500 mb-2 uppercase tracking-wide font-bold",
-    productName: "font-bold text-black mb-2 text-lg line-clamp-1",
-    footer: "flex items-center justify-between mt-4",
-    price: "text-gold-700 font-bold text-xl",
-    detailsBtn: "text-sm font-bold text-gold-700 hover:text-gold-900 hover:underline"
-  },
-  newsletter: {
-    section: "py-20 bg-gold-500 text-black relative overflow-hidden",
-    blob1: "absolute top-0 right-0 -mr-20 -mt-20 w-80 h-80 rounded-full bg-gold-400 blur-3xl opacity-50",
-    blob2: "absolute bottom-0 left-0 -ml-20 -mb-20 w-80 h-80 rounded-full bg-gold-600 blur-3xl opacity-30",
-    content: "relative max-w-4xl mx-auto px-4 text-center z-10",
-    title: "text-3xl font-bold mb-4",
-    text: "text-stone-900 mb-8 max-w-xl mx-auto font-medium",
-    form: "flex flex-col sm:flex-row gap-4 max-w-md mx-auto",
-    input: "flex-1 px-5 py-3 rounded-lg text-black focus:outline-none focus:ring-4 focus:ring-black/20 border-0 bg-white",
-    button: "bg-black hover:bg-stone-900 text-gold-500 px-6 py-3 shadow-lg",
-    disclaimer: "text-xs text-stone-800 mt-4"
+
+  products: {
+    section: "py-32 bg-white",
+    container: "max-w-7xl mx-auto px-6",
+    grid: "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-12",
+    card: "group cursor-pointer",
+    imageWrapper: "relative h-[400px] overflow-hidden bg-gray-100",
+    image: "w-full h-full object-cover transition-transform duration-700 group-hover:scale-105",
   }
 };
