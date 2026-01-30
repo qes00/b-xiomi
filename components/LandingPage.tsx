@@ -14,23 +14,23 @@ const CarouselSection: React.FC = () => {
   const slides = [
     {
       id: 1,
-      image: "https://images.unsplash.com/photo-1541099649105-f69ad21f3246?q=80&w=1287&auto=format&fit=crop",
-      title: "Colección Mujer",
-      subtitle: "Elegancia y confort en cada prenda",
-      link: "/shop?category=Mujer"
+      image: "https://images.unsplash.com/photo-1621451537084-482c73073a0f?q=80&w=1074&auto=format&fit=crop",
+      title: "Colección Mágica",
+      subtitle: "Vestidos que cuentan historias",
+      link: "/shop?category=Gala"
     },
     {
       id: 2,
-      image: "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=2070&auto=format&fit=crop",
+      image: "https://images.unsplash.com/photo-1518831959646-742c3a14ebf7?q=80&w=1035&auto=format&fit=crop",
       title: "Nueva Temporada",
-      subtitle: "Descubre lo último en moda peruana",
+      subtitle: "Elegancia para las más pequeñas",
       link: "/shop"
     },
     {
       id: 3,
-      image: "https://images.unsplash.com/photo-1445205170230-053b83016050?q=80&w=1471&auto=format&fit=crop",
-      title: "Abrigos de Alpaca",
-      subtitle: "Calidez natural para este invierno",
+      image: "https://images.unsplash.com/photo-1503919545889-aef636e10ad4?q=80&w=1287&auto=format&fit=crop",
+      title: "Días de Sol",
+      subtitle: "Frescura y color en cada diseño",
       link: "/shop"
     }
   ];
@@ -56,12 +56,12 @@ const CarouselSection: React.FC = () => {
           <img
             src={slide.image}
             alt={slide.title}
-            className="w-full h-full object-cover opacity-60"
+            className="w-full h-full object-cover opacity-80"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#0f1c29] via-transparent to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-primary/40 via-transparent to-transparent" />
 
           <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-6">
-            <span className="text-gold-400 tracking-[0.3em] uppercase text-sm font-bold mb-4 animate-fade-in-up">
+            <span className="text-secondary tracking-[0.3em] uppercase text-sm font-bold mb-4 animate-fade-in-up">
               {slide.subtitle}
             </span>
             <h2 className="text-5xl md:text-7xl font-serif text-white mb-8 italic animate-fade-in-up stagger-1">
@@ -69,7 +69,7 @@ const CarouselSection: React.FC = () => {
             </h2>
             <Link
               to={slide.link}
-              className="px-8 py-3 border border-white text-white hover:bg-white hover:text-[#0f1c29] transition-colors uppercase tracking-widest text-xs font-bold animate-fade-in-up stagger-2"
+              className="px-8 py-3 border border-white text-white hover:bg-white hover:text-primary transition-colors uppercase tracking-widest text-xs font-bold animate-fade-in-up stagger-2"
             >
               Ver Colección
             </Link>
@@ -80,13 +80,13 @@ const CarouselSection: React.FC = () => {
       {/* Controls */}
       <button
         onClick={prevSlide}
-        className="absolute left-4 top-1/2 -translate-y-1/2 z-20 w-12 h-12 flex items-center justify-center rounded-full border border-white/20 text-white hover:bg-white hover:text-[#0f1c29] transition-all"
+        className="absolute left-4 top-1/2 -translate-y-1/2 z-20 w-12 h-12 flex items-center justify-center rounded-full border border-white/20 text-white hover:bg-white hover:text-primary transition-all"
       >
         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" /></svg>
       </button>
       <button
         onClick={nextSlide}
-        className="absolute right-4 top-1/2 -translate-y-1/2 z-20 w-12 h-12 flex items-center justify-center rounded-full border border-white/20 text-white hover:bg-white hover:text-[#0f1c29] transition-all"
+        className="absolute right-4 top-1/2 -translate-y-1/2 z-20 w-12 h-12 flex items-center justify-center rounded-full border border-white/20 text-white hover:bg-white hover:text-primary transition-all"
       >
         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" /></svg>
       </button>
@@ -97,7 +97,7 @@ const CarouselSection: React.FC = () => {
           <button
             key={idx}
             onClick={() => setCurrentSlide(idx)}
-            className={`w-2 h-2 rounded-full transition-all ${idx === currentSlide ? 'bg-gold-500 w-8' : 'bg-white/50 hover:bg-white'
+            className={`w-2 h-2 rounded-full transition-all ${idx === currentSlide ? 'bg-primary w-8' : 'bg-white/50 hover:bg-white'
               }`}
           />
         ))}
@@ -154,17 +154,17 @@ export const LandingPage: React.FC = () => {
         <div className={styles.hero.overlay} />
         <div className={styles.hero.content}>
           <span className={styles.hero.badge}>
-            Nueva Colección 2026
+            Colección Boutique 2026
           </span>
 
           <h1 className={styles.hero.title}>
-            <span className="block font-serif italic text-gold-400">Elegancia</span>
-            <span className="block text-white tracking-widest uppercase text-6xl md:text-8xl mt-2 mb-4">Peruana</span>
-            <span className="block text-xl md:text-2xl font-light text-bone/90 tracking-widest font-sans">PARA EL MUNDO</span>
+            <span className="block font-serif italic text-primary">Vestidos</span>
+            <span className="block text-primary tracking-widest uppercase text-6xl md:text-8xl mt-2 mb-4">Mágicos</span>
+            <span className="block text-xl md:text-2xl font-light text-primary/80 tracking-widest font-sans">PARA ELLAS</span>
           </h1>
 
           <p className={styles.hero.description}>
-            Exquisita manufactura en algodón pima y denim. La fusión perfecta entre la tradición textil peruana y el diseño contemporáneo.
+            Elegancia y ternura en cada detalle. Descubre nuestra exclusiva selección de vestidos diseñados para hacer brillar a las más pequeñas en cada momento especial.
           </p>
 
           <div className={styles.hero.actions}>
@@ -176,9 +176,9 @@ export const LandingPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Denim Stitching Detail Bottom */}
-        <div className="absolute bottom-4 left-0 w-full h-px bg-gold-500/50" />
-        <div className="absolute bottom-6 left-0 w-full h-px bg-gold-500/50" />
+        {/* Decorative Detail Bottom */}
+        <div className="absolute bottom-4 left-0 w-full h-px bg-primary/20" />
+        <div className="absolute bottom-6 left-0 w-full h-px bg-primary/20" />
       </section>
 
       {/* Featured Carousel Section */}
@@ -188,22 +188,22 @@ export const LandingPage: React.FC = () => {
       <section className={styles.products.section}>
         <div className={styles.products.container}>
           <div className="text-center mb-16 relative">
-            <span className="text-gold-600 font-bold uppercase tracking-[0.2em] text-sm md:text-base">Lo mejor de la temporada</span>
-            <h2 className="text-4xl md:text-5xl font-serif text-[#0f1c29] mt-3">Productos Destacados</h2>
+            <span className="text-primary font-bold uppercase tracking-[0.2em] text-sm md:text-base">Nuestros Favoritos</span>
+            <h2 className="text-4xl md:text-5xl font-serif text-primary mt-3">Vestidos Destacados</h2>
             {/* Decorative element */}
-            <div className="w-24 h-1 bg-gold-400 mx-auto mt-6" />
+            <div className="w-24 h-1 bg-secondary mx-auto mt-6" />
           </div>
 
           <div className="relative">
             {loading ? (
               <div className="text-center py-12">
-                <div className="animate-spin w-8 h-8 border-4 border-gold-500 border-t-transparent rounded-full mx-auto mb-4"></div>
-                <p className="text-stone-600">Cargando productos destacados...</p>
+                <div className="animate-spin w-8 h-8 border-4 border-primary border-t-transparent rounded-full mx-auto mb-4"></div>
+                <p className="text-stone-600">Cargando vestidos destacados...</p>
               </div>
             ) : products.length === 0 ? (
               <div className="text-center py-12">
                 <p className="text-stone-600">No hay productos destacados disponibles</p>
-                <Link to="/shop" className="text-gold-600 hover:underline mt-2 inline-block">Ver tienda</Link>
+                <Link to="/shop" className="text-primary hover:underline mt-2 inline-block">Ver tienda</Link>
               </div>
             ) : (
               <>
@@ -231,14 +231,14 @@ export const LandingPage: React.FC = () => {
                     <button
                       onClick={prevProducts}
                       disabled={currentIndex === 0}
-                      className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center text-[#0f1c29] hover:bg-gold-400 hover:text-white transition-all disabled:opacity-30 disabled:cursor-not-allowed z-10"
+                      className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center text-primary hover:bg-primary hover:text-white transition-all disabled:opacity-30 disabled:cursor-not-allowed z-10"
                     >
                       <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" /></svg>
                     </button>
                     <button
                       onClick={nextProducts}
                       disabled={currentIndex >= products.length - 4}
-                      className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center text-[#0f1c29] hover:bg-gold-400 hover:text-white transition-all disabled:opacity-30 disabled:cursor-not-allowed z-10"
+                      className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center text-primary hover:bg-primary hover:text-white transition-all disabled:opacity-30 disabled:cursor-not-allowed z-10"
                     >
                       <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" /></svg>
                     </button>
@@ -251,10 +251,10 @@ export const LandingPage: React.FC = () => {
       </section>
 
 
-      {/* Denim Texture Banner */}
-      <section className="py-24 relative bg-[#2a4f6e] overflow-hidden">
-        {/* Texture overlay simulation */}
-        <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'url("https://www.transparenttextures.com/patterns/denim.png")' }}></div>
+      {/* Texture Banner */}
+      <section className="py-24 relative bg-primary overflow-hidden">
+        {/* Subtle pattern overlay */}
+        <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:20px_20px]"></div>
 
         <div className="relative z-10 max-w-4xl mx-auto text-center px-6">
           <h2 className="text-4xl md:text-5xl font-serif text-white mb-6">Únete al Club VIP</h2>
@@ -266,9 +266,9 @@ export const LandingPage: React.FC = () => {
             <input
               type="email"
               placeholder="Tu correo electrónico"
-              className="flex-1 px-6 py-4 bg-white/10 border border-white/20 text-white placeholder-white/60 focus:outline-none focus:border-gold-400 focus:bg-white/20 transition-all backdrop-blur-sm"
+              className="flex-1 px-6 py-4 bg-white/10 border border-white/20 text-white placeholder-white/60 focus:outline-none focus:border-secondary focus:bg-white/20 transition-all backdrop-blur-sm"
             />
-            <button type="submit" className="px-8 py-4 bg-gold-500 text-white font-bold uppercase tracking-widest hover:bg-gold-600 transition-colors shadow-lg hover:shadow-gold/50">
+            <button type="submit" className="px-8 py-4 bg-white text-primary font-bold uppercase tracking-widest hover:bg-secondary hover:text-white transition-colors shadow-lg">
               Suscribirse
             </button>
           </form>
@@ -290,14 +290,14 @@ const styles = {
   wrapper: "flex flex-col w-full overflow-x-hidden bg-white",
 
   hero: {
-    section: "relative min-h-screen flex items-center justify-center overflow-hidden bg-[#1e3850]",
-    overlay: "absolute inset-0 bg-[url('https://images.unsplash.com/photo-1582533036425-4c6e94e9f545?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center opacity-40 mix-blend-overlay",
+    section: "relative min-h-screen flex items-center justify-center overflow-hidden bg-accent-vanilla",
+    overlay: "absolute inset-0 bg-[url('https://images.unsplash.com/photo-1518831959646-742c3a14ebf7?q=80&w=1035&auto=format&fit=crop')] bg-cover bg-center opacity-30 mix-blend-overlay",
     content: "relative z-10 max-w-5xl mx-auto px-6 text-center flex flex-col items-center",
-    badge: "inline-block py-1 px-4 border border-gold-400 text-gold-400 text-xs font-bold uppercase tracking-[0.3em] mb-6",
+    badge: "inline-block py-1 px-4 border border-primary text-primary text-xs font-bold uppercase tracking-[0.3em] mb-6",
     title: "mb-8",
-    description: "text-lg text-bone/80 max-w-2xl mx-auto mb-12 font-light leading-relaxed",
+    description: "text-lg text-primary/70 max-w-2xl mx-auto mb-12 font-light leading-relaxed",
     actions: "flex flex-col sm:flex-row gap-4 justify-center",
-    primaryBtn: "px-10 py-4 bg-gold-500 text-white font-bold uppercase tracking-widest text-sm hover:bg-gold-600 transition-all shadow-lg hover:shadow-gold/30 hover:-translate-y-1",
+    primaryBtn: "px-10 py-4 bg-primary text-white font-bold uppercase tracking-widest text-sm hover:bg-secondary transition-all shadow-lg hover:-translate-y-1",
   },
 
   products: {

@@ -56,8 +56,8 @@ export const TermsAndConditions: React.FC = () => {
                     background-color: #f0f0f0;
                 }
                 .sidebar-nav a.active {
-                    border-left: 3px solid #c2ab48;
-                    background-color: #f9f6e7;
+                    border-left: 3px solid #A62D4D;
+                    background-color: #F9D1D5;
                     font-weight: bold;
                 }
                 section {
@@ -68,7 +68,7 @@ export const TermsAndConditions: React.FC = () => {
                     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
                 }
                 h2 {
-                    color: #c2ab48;
+                    color: #A62D4D;
                     margin-top: 0;
                     padding-bottom: 10px;
                     border-bottom: 1px solid #eee;
@@ -102,8 +102,8 @@ export const TermsAndConditions: React.FC = () => {
                 `}
             </style>
 
-            <header style={{ backgroundColor: '#f8f9fa', padding: '20px', marginBottom: '30px', borderBottom: '1px solid #ddd' }}>
-                <h1 style={{ color: '#2c3e50', margin: 0 }}>Términos y Condiciones - Allahu Akbar® Peru</h1>
+            <header style={{ backgroundColor: '#FFFFFF', padding: '20px', marginBottom: '30px', borderBottom: '1px solid #ddd' }}>
+                <h1 style={{ color: '#A62D4D', margin: 0 }}>Términos y Condiciones - Boutique Xiomi® Peru</h1>
             </header>
 
             <div className="container-flex" style={{ display: 'flex', flexWrap: 'wrap' }}>
@@ -124,11 +124,11 @@ export const TermsAndConditions: React.FC = () => {
 
                 <main style={{ flex: 1 }}>
                     <section id="bienvenida">
-                        <h2>Bienvenida a Allahu Akbar® Peru!</h2>
+                        <h2>Bienvenida a Boutique Xiomi® Peru!</h2>
                         <div className="info-box">
                             <p>Esta sección introductoria da la bienvenida a los usuarios y establece el propósito de los Términos y Condiciones. Aquí se explica que el uso de los servicios implica la aceptación de estos términos.</p>
                         </div>
-                        <p>Los presentes Términos y Condiciones (en adelante, "T&C") regulan el acceso y uso del sitio web www.allahuakbarperu.com (en adelante, el "Sitio Web"), así como la compra de productos ofrecidos en nuestra tienda física ubicada en Arequipa, Perú, y a través de nuestros canales de venta directa (por ejemplo, redes sociales, WhatsApp) (en adelante, conjuntamente, la "Tienda").</p>
+                        <p>Los presentes Términos y Condiciones (en adelante, "T&C") regulan el acceso y uso del sitio web www.boutiquexiomi.pe (en adelante, el "Sitio Web"), así como la compra de productos ofrecidos en nuestra tienda física ubicada en Arequipa, Perú, y a través de nuestros canales de venta directa (por ejemplo, redes sociales, WhatsApp) (en adelante, conjuntamente, la "Tienda").</p>
                         <p>Al realizar una compra o utilizar nuestros servicios, usted (en adelante, el "Cliente" o "Usuario") declara haber leído, entendido y aceptado en su totalidad los presentes T&C.</p>
                     </section>
 
@@ -137,12 +137,12 @@ export const TermsAndConditions: React.FC = () => {
                         <div className="info-box">
                             <p>Esta sección proporciona la información legal y de contacto de la tienda. Es fundamental para la transparencia y para que los clientes sepan con quién están tratando.</p>
                         </div>
-                        <p><strong>Razón Social:</strong> Allahu Akbar® Peru</p>
+                        <p><strong>Razón Social:</strong> Boutique Xiomi® Peru</p>
                         <p><strong>RUC:</strong> [Pendiente]</p>
-                        <p><strong>Domicilio Fiscal:</strong> Calle Los Arces, Arequipa, Perú</p>
-                        <p><strong>Tienda Física:</strong> Calle Los Arces, Arequipa, Perú</p>
-                        <p><strong>Correo Electrónico:</strong> alahuakbarperu@gmail.com</p>
-                        <p><strong>Teléfono de Contacto:</strong> 123456789</p>
+                        <p><strong>Domicilio Fiscal:</strong> Calle San Francisco, Arequipa, Perú</p>
+                        <p><strong>Tienda Física:</strong> Calle San Francisco, Arequipa, Perú</p>
+                        <p><strong>Correo Electrónico:</strong> contacto@boutiquexiomi.pe</p>
+                        <p><strong>Teléfono de Contacto:</strong> +51 987 654 321</p>
                     </section>
 
                     <section id="objeto">
@@ -150,7 +150,7 @@ export const TermsAndConditions: React.FC = () => {
                         <div className="info-box">
                             <p>Aquí se define el propósito principal de los Términos y Condiciones: regular la relación comercial entre la tienda y sus clientes respecto a la compra de productos.</p>
                         </div>
-                        <p>El objeto de los presentes T&C es regular la relación entre Allahu Akbar® Peru y el Cliente en lo referente a la adquisición de los productos de moda femenina (en adelante, los "Productos") ofrecidos por la Tienda.</p>
+                        <p>El objeto de los presentes T&C es regular la relación entre Boutique Xiomi® Peru y el Cliente en lo referente a la adquisición de los productos de moda infantil (en adelante, los "Productos") ofrecidos por la Tienda.</p>
                     </section>
 
                     <section id="condiciones">
@@ -170,7 +170,7 @@ export const TermsAndConditions: React.FC = () => {
                         </div>
                         <p><strong>1. Selección de Productos:</strong> El Cliente podrá seleccionar los Productos de su interés disponibles en la Tienda.</p>
                         <p><strong>2. Disponibilidad:</strong> Todos los pedidos están sujetos a la disponibilidad de los Productos.</p>
-                        <p><strong>3. Confirmación del Pedido:</strong> Una vez realizado el pedido y verificado el pago, Allahu Akbar® Peru enviará una confirmación al Cliente.</p>
+                        <p><strong>3. Confirmación del Pedido:</strong> Una vez realizado el pedido y verificado el pago, Boutique Xiomi® Peru enviará una confirmación al Cliente.</p>
                     </section>
 
                     <section id="precios">
@@ -213,7 +213,7 @@ export const TermsAndConditions: React.FC = () => {
                         <div className="info-box">
                             <p>Informa sobre la garantía legal que cubre los productos contra defectos de fabricación, según la normativa peruana.</p>
                         </div>
-                        <p>Los Productos ofrecidos por Allahu Akbar® Peru cuentan con la garantía legal establecida por la normativa peruana de protección al consumidor.</p>
+                        <p>Los Productos ofrecidos por Boutique Xiomi® Peru cuentan con la garantía legal establecida por la normativa peruana de protección al consumidor.</p>
                     </section>
 
                     <section id="cupones">
@@ -229,7 +229,7 @@ export const TermsAndConditions: React.FC = () => {
                         <div className="info-box">
                             <p>Afirma los derechos de propiedad de la tienda sobre su contenido (logos, marcas, textos, etc.) y prohíbe su uso no autorizado.</p>
                         </div>
-                        <p>Todo el contenido de la Tienda, incluyendo logotipos, marcas, nombres comerciales e imágenes, es propiedad de Allahu Akbar® Peru.</p>
+                        <p>Todo el contenido de la Tienda, incluyendo logotipos, marcas, nombres comerciales e imágenes, es propiedad de Boutique Xiomi® Peru.</p>
                     </section>
 
                     <section id="proteccion">
@@ -237,7 +237,7 @@ export const TermsAndConditions: React.FC = () => {
                         <div className="info-box">
                             <p>Informa sobre el tratamiento de datos personales de los clientes conforme a la ley peruana (Ley N° 29733).</p>
                         </div>
-                        <p>De conformidad con la Ley N° 29733, los datos personales proporcionados por el Cliente serán incorporados a un banco de datos de titularidad de Allahu Akbar® Peru.</p>
+                        <p>De conformidad con la Ley N° 29733, los datos personales proporcionados por el Cliente serán incorporados a un banco de datos de titularidad de Boutique Xiomi® Peru.</p>
                     </section>
 
                     <section id="atencion">
@@ -245,8 +245,8 @@ export const TermsAndConditions: React.FC = () => {
                         <div className="info-box">
                             <p>Proporciona los canales de contacto para consultas o reclamos y menciona la disponibilidad del Libro de Reclamaciones.</p>
                         </div>
-                        <p><strong>Email:</strong> alahuakbarperu@gmail.com</p>
-                        <p><strong>WhatsApp:</strong> 123456789</p>
+                        <p><strong>Email:</strong> contacto@boutiquexiomi.pe</p>
+                        <p><strong>WhatsApp:</strong> +51 987 654 321</p>
                     </section>
 
                     <section id="modificacion">
@@ -254,7 +254,7 @@ export const TermsAndConditions: React.FC = () => {
                         <div className="info-box">
                             <p>Indica que la tienda se reserva el derecho de cambiar los T&C.</p>
                         </div>
-                        <p>Allahu Akbar® Peru se reserva el derecho de modificar los presentes T&C en cualquier momento.</p>
+                        <p>Boutique Xiomi® Peru se reserva el derecho de modificar los presentes T&C en cualquier momento.</p>
                     </section>
 
                     <section id="legislacion">
@@ -267,17 +267,17 @@ export const TermsAndConditions: React.FC = () => {
 
                     <section id="contacto">
                         <h2>Contacto</h2>
-                        <p><strong>Allahu Akbar® Peru</strong></p>
-                        <p>Calle Los Arces, Arequipa, Perú</p>
-                        <p>Email: alahuakbarperu@gmail.com</p>
-                        <p>Teléfono: 123456789</p>
-                        <p className="highlight-box" style={{ textAlign: 'center', marginTop: '20px' }}>¡Gracias por elegir Allahu Akbar® Peru!</p>
+                        <p><strong>Boutique Xiomi® Peru</strong></p>
+                        <p>Calle San Francisco, Arequipa, Perú</p>
+                        <p>Email: contacto@boutiquexiomi.pe</p>
+                        <p>Teléfono: +51 987 654 321</p>
+                        <p className="highlight-box" style={{ textAlign: 'center', marginTop: '20px' }}>¡Gracias por elegir Boutique Xiomi® Peru!</p>
                     </section>
                 </main>
             </div>
 
             <footer style={{ marginTop: '50px', padding: '20px', textAlign: 'center', backgroundColor: '#f8f9fa', borderTop: '1px solid #ddd' }}>
-                <p>© Allahu Akbar® Peru. Todos los derechos reservados.</p>
+                <p>© Boutique Xiomi® Peru. Todos los derechos reservados.</p>
                 <p style={{ fontSize: '0.8rem', color: '#777' }}>Aplicación interactiva de Términos y Condiciones para facilitar la comprensión.</p>
             </footer>
         </div>

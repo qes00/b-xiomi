@@ -10,13 +10,13 @@ interface SEOHeadProps {
 }
 
 const defaultSEO = {
-    siteName: 'Allahu Akbar Shop',
-    title: 'Allahu Akbar Shop - Productos Premium Peruanos',
-    description: 'Tienda virtual con los mejores productos peruanos: ropa de algodón pima, artesanías, calzado y accesorios. Envíos a todo el Perú.',
+    siteName: 'Boutique Xiomi',
+    title: 'Boutique Xiomi - Vestidos para Niñas y Moda Infantil',
+    description: 'Boutique especializada en vestidos elegantes y mágicos para niñas. Diseños exclusivos y calidad premium. Envíos a todo el Perú.',
     image: '/og-image.jpg',
-    url: 'https://allahuakbarshop.pe',
+    url: 'https://boutiquexiomi.pe',
     locale: 'es_PE',
-    twitterHandle: '@allahuakbarshop',
+    twitterHandle: '@boutiquexiomi',
 };
 
 export const SEOHead: React.FC<SEOHeadProps> = ({

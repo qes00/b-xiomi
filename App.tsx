@@ -55,8 +55,8 @@ const Navbar: React.FC<{ cartCount: number; onOpenCart: () => void; isAuthentica
           <div className="flex items-center">
             <Link to="/" className="flex items-center">
               <img 
-                src="/logo.png" 
-                alt="Allahu Akbar Jeans" 
+                src="/bxlogo.svg" 
+                alt="Boutique Xiomi" 
                 className="h-12 md:h-14 w-auto object-contain"
               />
             </Link>
@@ -210,8 +210,8 @@ const Storefront: React.FC<{ products: Product[]; loading: boolean; addToCart: (
   return (
     <div className={styles.storefront.container}>
       <div className="mb-6">
-        <h1 className={styles.storefront.title}>Catálogo Completo</h1>
-        <p className={styles.storefront.subtitle}>Explora los mejores productos peruanos a un click de distancia.</p>
+        <h1 className={styles.storefront.title}>Vestidos Encantadores</h1>
+        <p className={styles.storefront.subtitle}>Explora nuestra selección mágica de vestidos para las más pequeñas.</p>
       </div>
 
       <div className="flex flex-col lg:flex-row gap-6">
@@ -248,7 +248,7 @@ const Storefront: React.FC<{ products: Product[]; loading: boolean; addToCart: (
               
               {/* Recommendation section when no results */}
               <div className="mt-8 pt-8 border-t border-stone-200">
-                <h3 className="text-2xl font-serif text-[#0f1c29] mb-6 text-center">Productos que te podrían gustar</h3>
+                <h3 className="text-2xl font-serif text-primary mb-6 text-center">Vestidos que te podrían gustar</h3>
                 <div className={styles.storefront.grid}>
                   {products.slice(0, 8).map(product => (
                     <ProductCard
@@ -395,12 +395,12 @@ const App: React.FC = () => {
                 <div className={styles.footer.grid}>
                   <div>
                     <img 
-                      src="/logo.png" 
-                      alt="Allahu Akbar Jeans" 
+                      src="/bxlogo.svg" 
+                      alt="Boutique Xiomi" 
                       className="h-16 w-auto object-contain mb-4 brightness-0 invert"
                     />
                     <p className={styles.footer.text}>
-                      Excelencia en moda peruana. Diseños únicos que combinan tradición y modernidad.
+                      Magia y elegancia en cada vestido. Creamos momentos inolvidables para las más pequeñas con diseños exclusivos.
                     </p>
                   </div>
                   <div>
@@ -442,7 +442,7 @@ const App: React.FC = () => {
                   </div>
                 </div>
                 <div className={styles.footer.copyright}>
-                  © 2026 Allahu Akbar® Peru. Todos los derechos reservados.
+                  © 2026 Boutique Xiomi®. Todos los derechos reservados.
                 </div>
               </div>
             </footer>
@@ -477,11 +477,11 @@ const App: React.FC = () => {
 
 const styles = {
   app: {
-    container: "min-h-screen bg-bone flex flex-col font-sans text-[#0f1c29]"
+    container: "min-h-screen bg-background flex flex-col font-sans text-primary"
   },
   navLink: {
-    active: "px-2 py-1 border-b-2 border-gold-500 text-[#0f1c29] font-serif font-bold italic transition-all",
-    inactive: "px-2 py-1 border-b-2 border-transparent text-[#3c6e96] hover:text-[#0f1c29] transition-all font-medium"
+    active: "px-2 py-1 border-b-2 border-primary text-primary font-serif font-bold italic transition-all",
+    inactive: "px-2 py-1 border-b-2 border-transparent text-primary/60 hover:text-primary transition-all font-medium"
   },
   navbar: {
     container: "sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-stone-100 shadow-sm",
@@ -490,9 +490,9 @@ const styles = {
     brand: "text-[#0f1c29] font-serif font-bold text-2xl tracking-tighter flex items-center gap-1",
     brandHighlight: "text-gold-500 italic",
     desktopMenu: "hidden md:flex ml-12 items-center gap-8",
-    iconButton: "p-2 rounded-full text-[#3c6e96] hover:text-[#0f1c29] hover:bg-stone-50 transition-all",
-    cartButton: "p-2 rounded-full text-[#3c6e96] hover:text-[#0f1c29] hover:bg-stone-50 transition-all relative",
-    cartCount: "absolute -top-1 -right-1 flex items-center justify-center w-5 h-5 text-[10px] font-bold text-white bg-gold-500 rounded-full",
+    iconButton: "p-2 rounded-full text-primary/60 hover:text-primary hover:bg-stone-50 transition-all",
+    cartButton: "p-2 rounded-full text-primary/60 hover:text-primary hover:bg-stone-50 transition-all relative",
+    cartCount: "absolute -top-1 -right-1 flex items-center justify-center w-5 h-5 text-[10px] font-bold text-white bg-primary rounded-full",
     mobileMenuBtn: "p-2 rounded-full text-[#0f1c29] hover:bg-stone-50"
   },
   mobileMenu: {
@@ -501,19 +501,19 @@ const styles = {
   },
   storefront: {
     container: "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12",
-    title: "text-4xl md:text-5xl font-serif font-bold text-[#0f1c29] mb-2",
-    subtitle: "text-[#3c6e96] font-light",
+    title: "text-4xl md:text-5xl font-serif font-bold text-primary mb-2",
+    subtitle: "text-primary/70 font-light",
     grid: "grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8"
   },
   footer: {
-    container: "bg-[#0f1c29] text-white mt-auto pt-16 pb-8",
+    container: "bg-primary text-white mt-auto pt-16 pb-8",
     wrapper: "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8",
     grid: "grid grid-cols-1 md:grid-cols-3 gap-12 mb-12",
-    title: "font-serif text-xl italic text-gold-400 mb-6",
-    text: "text-sm text-[#a6c2e0] leading-relaxed font-light max-w-xs",
-    list: "text-sm text-[#a6c2e0] space-y-3 font-light",
-    link: "hover:text-gold-400 transition-colors",
-    copyright: "border-t border-[#1e3850] pt-8 text-center text-xs text-[#7fa6c8] uppercase tracking-widest"
+    title: "font-serif text-xl italic text-secondary mb-6",
+    text: "text-sm text-secondary/80 leading-relaxed font-light max-w-xs",
+    list: "text-sm text-secondary/80 space-y-3 font-light",
+    link: "hover:text-secondary transition-colors",
+    copyright: "border-t border-white/10 pt-8 text-center text-xs text-secondary/60 uppercase tracking-widest"
   }
 };
 
