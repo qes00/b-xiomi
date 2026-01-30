@@ -7,8 +7,10 @@ import { PriceScheduler } from './admin/PriceScheduler';
 import { PopupManager } from './admin/PopupManager';
 import { OrderManager } from './admin/OrderManager';
 import { DashboardStats } from './admin/DashboardStats';
+import { AdminCredentialsManager } from './AdminCredentialsManager';
+import { BlogManager } from './admin/BlogManager';
 
-type TabType = 'dashboard' | 'orders' | 'inventory' | 'coupons' | 'pricing' | 'popups';
+type TabType = 'dashboard' | 'orders' | 'inventory' | 'coupons' | 'pricing' | 'popups' | 'blog' | 'credentials';
 
 const AdminPanel: React.FC = () => {
   const [activeTab, setActiveTab] = useState<TabType>('dashboard');
@@ -44,6 +46,8 @@ const AdminPanel: React.FC = () => {
     { id: 'coupons' as TabType, label: 'Cupones', icon: '🎟️' },
     { id: 'pricing' as TabType, label: 'Precios', icon: '💰' },
     { id: 'popups' as TabType, label: 'Popups', icon: '🎪' },
+    { id: 'blog' as TabType, label: 'Blog', icon: '📝' },
+    { id: 'credentials' as TabType, label: 'Credenciales', icon: '🔐' },
   ];
 
   return (
@@ -79,6 +83,8 @@ const AdminPanel: React.FC = () => {
         {activeTab === 'coupons' && <CouponManager />}
         {activeTab === 'pricing' && <PriceScheduler />}
         {activeTab === 'popups' && <PopupManager />}
+        {activeTab === 'blog' && <BlogManager />}
+        {activeTab === 'credentials' && <AdminCredentialsManager />}
       </div>
     </div>
   );

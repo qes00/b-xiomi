@@ -18,6 +18,7 @@ import { TermsAndConditions } from './pages/TermsAndConditions';
 import { ComplaintBook } from './pages/ComplaintBook';
 import { AboutUs } from './pages/AboutUs';
 import { Campaigns } from './pages/Campaigns';
+import { Blog } from './pages/Blog';
 
 // Lazy load heavy components
 const AdminPanel = lazy(() => import('./components/AdminPanel'));
@@ -57,7 +58,9 @@ const Navbar: React.FC<{ cartCount: number; onOpenCart: () => void; isAuthentica
             </Link>
             <div className={styles.navbar.desktopMenu}>
               <NavLink to="/">Inicio</NavLink>
+              <NavLink to="/about">Nosotros</NavLink>
               <NavLink to="/shop">Tienda</NavLink>
+              <NavLink to="/blog">Blog</NavLink>
               <NavLink to="/campaigns">Campaña</NavLink>
               {isAdmin && <NavLink to="/admin">Admin</NavLink>}
             </div>
@@ -117,7 +120,9 @@ const Navbar: React.FC<{ cartCount: number; onOpenCart: () => void; isAuthentica
         <div className={styles.mobileMenu.container}>
           <div className={styles.mobileMenu.content}>
             <NavLink to="/" onClick={() => setIsMobileMenuOpen(false)}>Inicio</NavLink>
+            <NavLink to="/about" onClick={() => setIsMobileMenuOpen(false)}>Nosotros</NavLink>
             <NavLink to="/shop" onClick={() => setIsMobileMenuOpen(false)}>Tienda</NavLink>
+            <NavLink to="/blog" onClick={() => setIsMobileMenuOpen(false)}>Blog</NavLink>
             <NavLink to="/campaigns" onClick={() => setIsMobileMenuOpen(false)}>Campaña</NavLink>
             {isAdmin && <NavLink to="/admin" onClick={() => setIsMobileMenuOpen(false)}>Admin</NavLink>}
           </div>
@@ -367,6 +372,7 @@ const App: React.FC = () => {
                   <Route path="/terms" element={<TermsAndConditions />} />
                   <Route path="/complaints" element={<ComplaintBook />} />
                   <Route path="/about" element={<AboutUs />} />
+                  <Route path="/blog" element={<Blog />} />
                   <Route path="/campaigns" element={<Campaigns />} />
                   <Route path="*" element={<NotFoundPage />} />
                 </Routes>

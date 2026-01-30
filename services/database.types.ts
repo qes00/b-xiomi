@@ -256,6 +256,68 @@ export interface Database {
                     updated_at?: string;
                 };
             };
+            admin_credentials: {
+                Row: {
+                    id: string;
+                    name: string;
+                    encrypted_value: string;
+                    credential_type: string;
+                    description: string | null;
+                    created_by: string | null;
+                    created_at: string;
+                    updated_at: string;
+                };
+                Insert: {
+                    id?: string;
+                    name: string;
+                    encrypted_value: string;
+                    credential_type: string;
+                    description?: string | null;
+                    created_by?: string | null;
+                    created_at?: string;
+                    updated_at?: string;
+                };
+                Update: {
+                    name?: string;
+                    encrypted_value?: string;
+                    credential_type?: string;
+                    description?: string | null;
+                    updated_at?: string;
+                };
+            };
+            blog_posts: {
+                Row: {
+                    id: string;
+                    title: string;
+                    excerpt: string | null;
+                    content: string;
+                    image_url: string | null;
+                    author: string;
+                    published: boolean;
+                    created_at: string;
+                    updated_at: string;
+                };
+                Insert: {
+                    id?: string;
+                    title: string;
+                    excerpt?: string | null;
+                    content: string;
+                    image_url?: string | null;
+                    author?: string;
+                    published?: boolean;
+                    created_at?: string;
+                    updated_at?: string;
+                };
+                Update: {
+                    title?: string;
+                    excerpt?: string | null;
+                    content?: string;
+                    image_url?: string | null;
+                    author?: string;
+                    published?: boolean;
+                    updated_at?: string;
+                };
+            };
         };
     };
 }
