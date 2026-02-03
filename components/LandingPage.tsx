@@ -149,36 +149,68 @@ export const LandingPage: React.FC = () => {
 
   return (
     <div className={styles.wrapper}>
-      {/* Hero Section - Denim & Gold */}
-      <section className={styles.hero.section}>
-        <div className={styles.hero.overlay} />
-        <div className={styles.hero.content}>
-          <span className={styles.hero.badge}>
-            Colección Boutique 2026
-          </span>
+      {/* Hero Section - Boutique Xiomi Exclusive */}
+      <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-rose-50 via-white to-pink-50">
+        {/* Animated background elements */}
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="absolute -top-40 -right-40 w-96 h-96 bg-pink-200/30 rounded-full blur-3xl animate-pulse" />
+          <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-rose-200/30 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-br from-pink-100/20 to-rose-100/20 rounded-full blur-3xl" />
+        </div>
+        
+        {/* Content */}
+        <div className="relative z-10 max-w-6xl mx-auto px-6 text-center flex flex-col items-center">
+          <div className="mb-6 flex items-center gap-3">
+            <div className="w-12 h-px bg-rose-300" />
+            <span className="text-rose-400 font-medium uppercase tracking-[0.25em] text-xs">Boutique Xiomi Perú</span>
+            <div className="w-12 h-px bg-rose-300" />
+          </div>
 
-          <h1 className={styles.hero.title}>
-            <span className="block font-serif italic text-primary">Vestidos</span>
-            <span className="block text-primary tracking-widest uppercase text-6xl md:text-8xl mt-2 mb-4">Mágicos</span>
-            <span className="block text-xl md:text-2xl font-light text-primary/80 tracking-widest font-sans">PARA ELLAS</span>
+          <h1 className="mb-8">
+            <span className="block text-5xl md:text-7xl font-serif text-[#4b0028] mb-2">Pequeñas</span>
+            <span className="block text-6xl md:text-9xl font-serif italic text-[#e45f7a] tracking-tight">Princesas</span>
+            <span className="block text-lg md:text-xl font-light text-[#4b0028]/60 tracking-[0.4em] uppercase mt-4">Vestidos de Ensueño</span>
           </h1>
 
-          <p className={styles.hero.description}>
-            Elegancia y ternura en cada detalle. Descubre nuestra exclusiva selección de vestidos diseñados para hacer brillar a las más pequeñas en cada momento especial.
+          <p className="text-lg md:text-xl text-[#4b0028]/70 max-w-2xl mx-auto mb-10 font-light leading-relaxed">
+            En <strong className="text-[#e45f7a]">Boutique Xiomi</strong> creamos momentos mágicos. Cada vestido es una obra de arte diseñada para que las más pequeñas brillen en sus ocasiones más especiales.
           </p>
 
-          <div className={styles.hero.actions}>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link to="/shop">
-              <button className={styles.hero.primaryBtn}>
-                Explorar Colección
+              <button className="px-10 py-4 bg-[#4b0028] text-white font-bold uppercase tracking-widest text-sm hover:bg-[#e45f7a] transition-all shadow-xl hover:-translate-y-1 hover:shadow-2xl rounded-full">
+                Ver Colección
+              </button>
+            </Link>
+            <Link to="/about">
+              <button className="px-10 py-4 bg-white text-[#4b0028] font-bold uppercase tracking-widest text-sm border-2 border-[#4b0028] hover:bg-[#4b0028] hover:text-white transition-all rounded-full">
+                Nuestra Historia
               </button>
             </Link>
           </div>
+          
+          {/* Trust badges */}
+          <div className="mt-16 flex flex-wrap items-center justify-center gap-8 text-[#4b0028]/50 text-sm">
+            <div className="flex items-center gap-2">
+              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" /></svg>
+              <span>Envío a todo Perú</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M5 2a2 2 0 00-2 2v14l3.5-2 3.5 2 3.5-2 3.5 2V4a2 2 0 00-2-2H5zm2.5 3a1.5 1.5 0 100 3 1.5 1.5 0 000-3zm6.207.293a1 1 0 00-1.414 0l-6 6a1 1 0 101.414 1.414l6-6a1 1 0 000-1.414zM12.5 10a1.5 1.5 0 100 3 1.5 1.5 0 000-3z" clipRule="evenodd" /></svg>
+              <span>Precios exclusivos</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
+              <span>Calidad premium</span>
+            </div>
+          </div>
         </div>
 
-        {/* Decorative Detail Bottom */}
-        <div className="absolute bottom-4 left-0 w-full h-px bg-primary/20" />
-        <div className="absolute bottom-6 left-0 w-full h-px bg-primary/20" />
+        {/* Scroll indicator */}
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 animate-bounce">
+          <span className="text-xs text-[#4b0028]/40 uppercase tracking-widest">Descubre más</span>
+          <svg className="w-5 h-5 text-[#4b0028]/40" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" /></svg>
+        </div>
       </section>
 
       {/* Featured Carousel Section */}
@@ -251,29 +283,7 @@ export const LandingPage: React.FC = () => {
       </section>
 
 
-      {/* Texture Banner */}
-      <section className="py-24 relative bg-primary overflow-hidden">
-        {/* Subtle pattern overlay */}
-        <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:20px_20px]"></div>
 
-        <div className="relative z-10 max-w-4xl mx-auto text-center px-6">
-          <h2 className="text-4xl md:text-5xl font-serif text-white mb-6">Únete al Club VIP</h2>
-          <p className="text-stone-200 text-lg mb-10 font-light max-w-2xl mx-auto">
-            Recibe noticias sobre nuestras colecciones de edición limitada y descuentos exclusivos directamente en tu correo.
-          </p>
-
-          <form className="flex flex-col sm:flex-row gap-4 justify-center max-w-lg mx-auto" onSubmit={(e) => e.preventDefault()}>
-            <input
-              type="email"
-              placeholder="Tu correo electrónico"
-              className="flex-1 px-6 py-4 bg-white/10 border border-white/20 text-white placeholder-white/60 focus:outline-none focus:border-secondary focus:bg-white/20 transition-all backdrop-blur-sm"
-            />
-            <button type="submit" className="px-8 py-4 bg-white text-primary font-bold uppercase tracking-widest hover:bg-secondary hover:text-white transition-colors shadow-lg">
-              Suscribirse
-            </button>
-          </form>
-        </div>
-      </section>
       <ProductViewer
         product={viewingProduct}
         products={products}
