@@ -184,7 +184,9 @@ export const useAuthStore = create<AuthState>()(
 
             signInWithGoogle: async () => {
                 if (!isSupabaseConfigured() || !supabase) {
-                    return { success: false, error: 'Supabase no configurado' };
+                    const errorMsg = 'Supabase no configurado';
+                    set({ error: errorMsg, isLoading: false });
+                    return { success: false, error: errorMsg };
                 }
 
                 set({ isLoading: true, error: null });
