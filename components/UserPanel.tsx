@@ -5,7 +5,7 @@ import { formatCurrency } from '../constants';
 import { useNavigate } from 'react-router-dom';
 import { MyOrders } from './MyOrders';
 import { useAuthStore } from '../stores/authStore';
-import { getUserProfile, changePassword, verifyCurrentPassword } from '../services/userService';
+import { getUserProfile } from '../services/userService';
 
 interface UserPanelProps {
   cart: CartItem[];
@@ -14,7 +14,7 @@ interface UserPanelProps {
 
 const UserPanel: React.FC<UserPanelProps> = ({ cart }) => {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState<'profile' | 'orders' | 'shipping' | 'security' | 'cart'>('profile');
+  const [activeTab, setActiveTab] = useState<'profile' | 'orders' | 'shipping' | 'cart'>('profile');
   const authUser = useAuthStore(state => state.user);
   
   // User profile state - inicializa con datos del authStore
@@ -52,15 +52,6 @@ const UserPanel: React.FC<UserPanelProps> = ({ cart }) => {
     loadUserProfile();
   }, [authUser]);
 
-  // Password State - Sistema de 2 fases
-  const [passwordPhase, setPasswordPhase] = useState<1 | 2>(1); // Fase 1: verificar actual, Fase 2: nueva contraseña
-  const [passwordForm, setPasswordForm] = useState({
-    current: '',
-    new: '',
-    confirm: ''
-  });
-  const [isVerifyingPassword, setIsVerifyingPassword] = useState(false);
-  const [isChangingPassword, setIsChangingPassword] = useState(false);
 
   const handleSaveProfile = (e: React.FormEvent) => {
     e.preventDefault();
@@ -69,65 +60,6 @@ const UserPanel: React.FC<UserPanelProps> = ({ cart }) => {
   };
 
 
-  // FASE 1: Verificar contraseña actual
-  const handleVerifyCurrentPassword = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!passwordForm.current) {
-      alert("Por favor ingresa tu contraseña actual.");
-      return;
-    }
-
-    try {
-      setIsVerifyingPassword(true);
-      const { success, error } = await verifyCurrentPassword(passwordForm.current);
-      
-      if (success) {
-        setPasswordPhase(2); // Pasar a fase 2
-      } else {
-        alert(error || "La contraseña actual es incorrecta");
-      }
-    } catch (err) {
-      alert("Ocurrió un error inesperado.");
-    } finally {
-      setIsVerifyingPassword(false);
-    }
-  };
-
-  // FASE 2: Cambiar a nueva contraseña
-  const handlePasswordChange = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (passwordForm.new.length < 8) {
-      alert("La contraseña debe tener al menos 8 caracteres.");
-      return;
-    }
-    if (passwordForm.new !== passwordForm.confirm) {
-      alert("Las nuevas contraseñas no coinciden.");
-      return;
-    }
-
-    try {
-      setIsChangingPassword(true);
-      const { success, error } = await changePassword(passwordForm.current, passwordForm.new);
-      
-      if (success) {
-        alert("Tu contraseña ha sido actualizada correctamente.");
-        setPasswordForm({ current: '', new: '', confirm: '' });
-        setPasswordPhase(1); // Volver a fase 1
-      } else {
-        alert(error || "Error al actualizar la contraseña");
-      }
-    } catch (err) {
-      alert("Ocurrió un error inesperado.");
-    } finally {
-      setIsChangingPassword(false);
-    }
-  };
-
-  // Cancelar cambio de contraseña y volver a fase 1
-  const handleCancelPasswordChange = () => {
-    setPasswordPhase(1);
-    setPasswordForm({ current: '', new: '', confirm: '' });
-  };
 
   const handleDeleteAccount = () => {
     const isConfirmed = window.confirm(
@@ -169,10 +101,6 @@ const UserPanel: React.FC<UserPanelProps> = ({ cart }) => {
         <button onClick={() => setActiveTab('shipping')} className={getTabStyle(activeTab === 'shipping')}>
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
           Direcciones de Envío
-        </button>
-        <button onClick={() => setActiveTab('security')} className={getTabStyle(activeTab === 'security')}>
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
-          Seguridad & Privacidad
         </button>
         <button onClick={() => setActiveTab('cart')} className={getTabStyle(activeTab === 'cart')}>
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
@@ -235,6 +163,21 @@ const UserPanel: React.FC<UserPanelProps> = ({ cart }) => {
                   </div>
                 )}
               </form>
+
+              <div className="mt-12 pt-8 border-t border-stone-200">
+                <h2 className="text-xl font-bold text-red-700 mb-4">Zona de Peligro</h2>
+                <div className={styles.dangerZone.container}>
+                  <div>
+                    <h3 className="font-bold text-red-900">Eliminar Cuenta</h3>
+                    <p className="text-sm text-red-700 mt-1 max-w-lg font-medium">
+                      Al eliminar tu cuenta, se borrarán todos tus datos personales, direcciones guardadas e historial de pedidos. Esta acción <strong>no se puede deshacer</strong>.
+                    </p>
+                  </div>
+                  <Button variant="danger" onClick={handleDeleteAccount}>
+                    Eliminar mi Cuenta
+                  </Button>
+                </div>
+              </div>
             </div>
           )}
 
@@ -269,98 +212,6 @@ const UserPanel: React.FC<UserPanelProps> = ({ cart }) => {
 
 
 
-          {activeTab === 'security' && (
-            <div className={styles.card.container}>
-              <h2 className={`${styles.card.title} mb-6`}>Gestión de Contraseña</h2>
-
-              {/* FASE 1: Verificar contraseña actual */}
-              {passwordPhase === 1 && (
-                <form onSubmit={handleVerifyCurrentPassword} className="max-w-md space-y-4 mb-12">
-                  <div className="bg-blue-50 border-l-4 border-blue-400 p-4 mb-4">
-                    <p className="text-sm text-blue-800 font-medium">
-                      <strong>Paso 1 de 2:</strong> Por seguridad, primero verifica tu contraseña actual.
-                    </p>
-                    <p className="text-xs text-blue-600 mt-1">
-                      Límite: Máximo 2 cambios de contraseña por día.
-                    </p>
-                  </div>
-                  <div>
-                    <label className={styles.form.label}>Contraseña Actual</label>
-                    <input
-                      type="password"
-                      required
-                      value={passwordForm.current}
-                      onChange={(e) => setPasswordForm({ ...passwordForm, current: e.target.value })}
-                      className={styles.form.input}
-                      placeholder="Ingresa tu contraseña actual"
-                    />
-                  </div>
-                  <Button type="submit" disabled={isVerifyingPassword}>
-                    {isVerifyingPassword ? 'Verificando...' : 'Verificar Contraseña'}
-                  </Button>
-                </form>
-              )}
-
-              {/* FASE 2: Nueva contraseña (solo visible si fase 1 fue exitosa) */}
-              {passwordPhase === 2 && (
-                <form onSubmit={handlePasswordChange} className="max-w-md space-y-4 mb-12">
-                  <div className="bg-green-50 border-l-4 border-green-400 p-4 mb-4">
-                    <p className="text-sm text-green-800 font-medium">
-                      <strong>Paso 2 de 2:</strong> ¡Contraseña verificada! Ahora ingresa tu nueva contraseña.
-                    </p>
-                  </div>
-                  <div>
-                    <label className={styles.form.label}>Nueva Contraseña</label>
-                    <input
-                      type="password"
-                      required
-                      minLength={8}
-                      value={passwordForm.new}
-                      onChange={(e) => setPasswordForm({ ...passwordForm, new: e.target.value })}
-                      className={styles.form.input}
-                      placeholder="Mínimo 8 caracteres"
-                    />
-                    <p className="text-xs text-stone-500 mt-1 font-medium">Mínimo 8 caracteres.</p>
-                  </div>
-                  <div>
-                    <label className={styles.form.label}>Confirmar Nueva Contraseña</label>
-                    <input
-                      type="password"
-                      required
-                      minLength={8}
-                      value={passwordForm.confirm}
-                      onChange={(e) => setPasswordForm({ ...passwordForm, confirm: e.target.value })}
-                      className={styles.form.input}
-                      placeholder="Repite la nueva contraseña"
-                    />
-                  </div>
-                  <div className="flex gap-3">
-                    <Button type="submit" disabled={isChangingPassword}>
-                      {isChangingPassword ? 'Actualizando...' : 'Actualizar Contraseña'}
-                    </Button>
-                    <Button type="button" variant="outline" onClick={handleCancelPasswordChange}>
-                      Cancelar
-                    </Button>
-                  </div>
-                </form>
-              )}
-
-              <div className="border-t border-stone-200 pt-8">
-                <h2 className="text-xl font-bold text-red-700 mb-4">Zona de Peligro</h2>
-                <div className={styles.dangerZone.container}>
-                  <div>
-                    <h3 className="font-bold text-red-900">Eliminar Cuenta</h3>
-                    <p className="text-sm text-red-700 mt-1 max-w-lg font-medium">
-                      Al eliminar tu cuenta, se borrarán todos tus datos personales, direcciones guardadas, métodos de pago e historial de pedidos. Esta acción <strong>no se puede deshacer</strong>.
-                    </p>
-                  </div>
-                  <Button variant="danger" onClick={handleDeleteAccount}>
-                    Eliminar mi Cuenta
-                  </Button>
-                </div>
-              </div>
-            </div>
-          )}
 
           {activeTab === 'cart' && (
             <div className={styles.card.container}>

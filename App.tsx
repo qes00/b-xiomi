@@ -25,7 +25,6 @@ const AdminPanel = lazy(() => import('./components/AdminPanel'));
 const AdminLoginPage = lazy(() => import('./components/AdminLoginPage').then(m => ({ default: m.AdminLoginPage })));
 const UserPanel = lazy(() => import('./components/UserPanel'));
 const CheckoutPage = lazy(() => import('./components/CheckoutPage').then(m => ({ default: m.CheckoutPage })));
-const ResetPasswordPage = lazy(() => import('./components/ResetPasswordPage').then(m => ({ default: m.ResetPasswordPage })));
 
 // Helper for navbar to highlight active link
 const NavLink: React.FC<{ to: string; children: React.ReactNode; onClick?: () => void }> = ({ to, children, onClick }) => {
@@ -282,7 +281,7 @@ const App: React.FC = () => {
   const { items: cart, isOpen: isCartOpen, openCart, closeCart, addItem, removeItem, clearCart, getTotalItems } = useCartStore();
 
   // Auth store con Supabase
-  const { user, isLoading: authLoading, isInitialized, initialize, signIn, signOut } = useAuthStore();
+  const { user, initialize, signOut } = useAuthStore();
   const isAuthenticated = user !== null;
   const isAdmin = user?.role === 'admin';
   
@@ -314,24 +313,6 @@ const App: React.FC = () => {
     loadProducts();
   }, []);
 
-  const handleLogin = async (email: string, password: string) => {
-    const currentUser = useAuthStore.getState().user;
-    
-    // Si hay un admin logueado, cerrar sesión primero para evitar conflictos
-    if (currentUser?.role === 'admin') {
-      await signOut();
-      // Pequeña espera para asegurar que el logout se complete
-      await new Promise(resolve => setTimeout(resolve, 300));
-    }
-    
-    const result = await signIn(email, password);
-    if (result.success) {
-      setShowLoginModal(false);
-      window.location.hash = '#/profile';
-    } else {
-      alert(result.error || 'Error al iniciar sesión');
-    }
-  };
 
   const handleLogout = async () => {
     await signOut();
@@ -364,7 +345,6 @@ const App: React.FC = () => {
                   <Route path="/profile" element={
                     isAuthenticated ? <UserPanel cart={cart} /> : <Navigate to="/" replace />
                   } />
-                  <Route path="/reset-password" element={<ResetPasswordPage />} />
                   <Route path="/checkout" element={
                     <CheckoutPage 
                       cart={cart.map(item => ({ product: item, quantity: item.quantity }))} 
@@ -462,11 +442,6 @@ const App: React.FC = () => {
             <LoginModal
               isOpen={showLoginModal}
               onClose={() => setShowLoginModal(false)}
-              onLogin={handleLogin}
-              onForgotPassword={() => {
-                setShowLoginModal(false);
-                window.location.hash = '#/reset-password';
-              }}
             />
           </div>
         </ToastProvider>

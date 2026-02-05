@@ -238,163 +238,28 @@ export const deleteUserAddress = async (addressId: string): Promise<boolean> => 
 };
 
 /**
- * Registrar nuevo usuario
+ * Iniciar sesión con Google OAuth
  */
-export const signUp = async (email: string, password: string): Promise<{ user: UserData | null; error: string | null }> => {
+export const signInWithGoogle = async (): Promise<{ error: string | null }> => {
     if (!isSupabaseConfigured() || !supabase) {
-        return { user: null, error: 'Supabase no configurado' };
+        return { error: 'Supabase no configurado' };
     }
 
-    const { data, error } = await supabase.auth.signUp({
-        email,
-        password,
-    });
-
-    if (error) {
-        return { user: null, error: handleSupabaseError(error) };
-    }
-
-    if (data.user) {
-        // Al usar confirmación de correo, no tenemos sesión aún, así que no podemos crear el perfil manualmente por RLS.
-        // Se debe usar un Trigger en la BD (recomendado) o esperar al primer login.
-        if (data.session) {
-            await createUserProfile(data.user.id, {});
-        }
-
-        return {
-            user: {
-                id: data.user.id,
-                email: data.user.email || '',
-                firstName: '',
-                lastName: '',
-                phone: '',
+    const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+            redirectTo: `${window.location.origin}/auth/callback`,
+            queryParams: {
+                access_type: 'offline',
+                prompt: 'select_account',
             },
-            error: null,
-        };
-    }
-
-    return { user: null, error: 'Error al crear usuario' };
-};
-
-/**
- * Iniciar sesión
- */
-export const signIn = async (email: string, password: string): Promise<{ user: UserData | null; error: string | null }> => {
-    if (!isSupabaseConfigured() || !supabase) {
-        return { user: null, error: 'Supabase no configurado' };
-    }
-
-    const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
+        },
     });
 
     if (error) {
-        return { user: null, error: handleSupabaseError(error) };
+        return { error: handleSupabaseError(error) };
     }
 
-    if (data.user) {
-        return {
-            user: await getCurrentUser(),
-            error: null,
-        };
-    }
-
-    return { user: null, error: 'Error al iniciar sesión' };
+    return { error: null };
 };
 
-/**
- * Cerrar sesión
- */
-export const signOut = async (): Promise<void> => {
-    if (!isSupabaseConfigured() || !supabase) {
-        return;
-    }
-
-    await supabase.auth.signOut();
-};
-
-/**
- * Verificar contraseña actual (Fase 1 del cambio de contraseña)
- */
-export const verifyCurrentPassword = async (currentPassword: string): Promise<{ success: boolean; error: string | null }> => {
-    if (!isSupabaseConfigured() || !supabase) {
-        return { success: false, error: 'Supabase no configurado' };
-    }
-
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user || !user.email) return { success: false, error: 'No hay usuario autenticado' };
-
-    const { error: signInError } = await supabase.auth.signInWithPassword({
-        email: user.email,
-        password: currentPassword
-    });
-
-    if (signInError) {
-        return { success: false, error: 'La contraseña actual es incorrecta' };
-    }
-
-    return { success: true, error: null };
-};
-
-/**
- * Cambiar contraseña (Fase 2) - con límite de 2 cambios por día
- */
-export const changePassword = async (oldPassword: string, newPassword: string): Promise<{ success: boolean; error: string | null }> => {
-    if (!isSupabaseConfigured() || !supabase) {
-        return { success: false, error: 'Supabase no configurado' };
-    }
-
-    // 1. Obtener usuario actual
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user || !user.email) return { success: false, error: 'No hay usuario autenticado' };
-
-    // 2. Verificar límite diario
-    const { data: profile } = await supabase
-        .from('user_profiles')
-        .select('last_password_update, password_update_count')
-        .eq('id', user.id)
-        .single();
-
-    const today = new Date().toISOString().split('T')[0];
-    const lastUpdateDate = profile?.last_password_update 
-        ? new Date(profile.last_password_update).toISOString().split('T')[0]
-        : null;
-    
-    const currentCount = (lastUpdateDate === today) ? (profile?.password_update_count || 0) : 0;
-    
-    if (currentCount >= 2) {
-        return { success: false, error: 'Has alcanzado el límite de 2 cambios de contraseña por día. Intenta mañana.' };
-    }
-
-    // 3. Verificar contraseña actual re-autenticando
-    const { error: signInError } = await supabase.auth.signInWithPassword({
-        email: user.email,
-        password: oldPassword
-    });
-
-    if (signInError) {
-        return { success: false, error: 'La contraseña actual es incorrecta' };
-    }
-
-    // 4. Actualizar contraseña
-    const { error: updateError } = await supabase.auth.updateUser({
-        password: newPassword
-    });
-
-    if (updateError) {
-        return { success: false, error: handleSupabaseError(updateError) };
-    }
-
-    // 5. Actualizar conteo en user_profiles
-    const newCount = currentCount + 1;
-    await supabase
-        .from('user_profiles')
-        .update({
-            last_password_update: new Date().toISOString(),
-            password_update_count: newCount
-        })
-        .eq('id', user.id);
-
-    return { success: true, error: null };
-};

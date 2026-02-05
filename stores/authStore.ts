@@ -28,8 +28,7 @@ interface AuthState {
 
     // Actions
     initialize: () => Promise<void>;
-    signIn: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
-    signUp: (email: string, password: string, firstName?: string, lastName?: string) => Promise<{ success: boolean; error?: string }>;
+    signInWithGoogle: () => Promise<{ success: boolean; error?: string }>;
     signOut: () => Promise<void>;
     clearError: () => void;
 
@@ -183,7 +182,7 @@ export const useAuthStore = create<AuthState>()(
                 }
             },
 
-            signIn: async (email: string, password: string) => {
+            signInWithGoogle: async () => {
                 if (!isSupabaseConfigured() || !supabase) {
                     return { success: false, error: 'Supabase no configurado' };
                 }
@@ -191,9 +190,11 @@ export const useAuthStore = create<AuthState>()(
                 set({ isLoading: true, error: null });
 
                 try {
-                    const { data, error } = await supabase.auth.signInWithPassword({
-                        email,
-                        password,
+                    const { error } = await supabase.auth.signInWithOAuth({
+                        provider: 'google',
+                        options: {
+                            redirectTo: `${window.location.origin}/auth/callback`,
+                        },
                     });
 
                     if (error) {
@@ -201,71 +202,11 @@ export const useAuthStore = create<AuthState>()(
                         return { success: false, error: error.message };
                     }
 
-                    if (data.user) {
-                        const profile = await fetchUserProfile(data.user.id);
-                        
-                        set({
-                            session: data.session,
-                            user: {
-                                id: data.user.id,
-                                email: data.user.email || '',
-                                ...profile,
-                            } as AuthUser,
-                            isLoading: false,
-                        });
-
-                        return { success: true };
-                    }
-
-                    return { success: false, error: 'Error desconocido' };
+                    // NOTA: OAuth redirige la página, por lo que el estado se recuperará
+                    // en initialize() después de la redirección.
+                    return { success: true };
                 } catch (error) {
-                    const message = error instanceof Error ? error.message : 'Error al iniciar sesión';
-                    set({ isLoading: false, error: message });
-                    return { success: false, error: message };
-                }
-            },
-
-            signUp: async (email: string, password: string, firstName?: string, lastName?: string) => {
-                if (!isSupabaseConfigured() || !supabase) {
-                    return { success: false, error: 'Supabase no configurado' };
-                }
-
-                set({ isLoading: true, error: null });
-
-                try {
-                    const { data, error } = await supabase.auth.signUp({
-                        email,
-                        password,
-                    });
-
-                    if (error) {
-                        set({ isLoading: false, error: error.message });
-                        return { success: false, error: error.message };
-                    }
-
-                    if (data.user) {
-                        // Crear perfil de usuario
-                        await ensureUserProfile(data.user.id, email, firstName, lastName);
-                        
-                        set({
-                            session: data.session,
-                            user: {
-                                id: data.user.id,
-                                email: data.user.email || '',
-                                firstName: firstName || '',
-                                lastName: lastName || '',
-                                phone: '',
-                                role: 'customer',
-                            },
-                            isLoading: false,
-                        });
-
-                        return { success: true };
-                    }
-
-                    return { success: false, error: 'Error desconocido' };
-                } catch (error) {
-                    const message = error instanceof Error ? error.message : 'Error al registrar';
+                    const message = error instanceof Error ? error.message : 'Error al iniciar sesión con Google';
                     set({ isLoading: false, error: message });
                     return { success: false, error: message };
                 }
@@ -313,8 +254,7 @@ export const useAuth = () => useAuthStore((state) => ({
 }));
 
 export const useAuthActions = () => useAuthStore((state) => ({
-    signIn: state.signIn,
-    signUp: state.signUp,
+    signInWithGoogle: state.signInWithGoogle,
     signOut: state.signOut,
     clearError: state.clearError,
 }));

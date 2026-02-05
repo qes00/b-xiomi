@@ -214,7 +214,7 @@ const styles = {
     variantOptions: "flex flex-wrap gap-2",
     variantButton: "px-4 py-2 border-2 border-stone-300 rounded-lg font-medium text-stone-800 hover:border-gold-500 transition-colors",
     variantButtonActive: "!border-gold-600 !bg-gold-50 !text-black font-bold",
-    features: "bg-bone rounded-lg p-6",
+    features: "bg-white rounded-lg p-6",
     featuresTitle: "font-bold text-black mb-3",
     featuresList: "space-y-2 text-stone-800 text-sm",
     actions: "flex gap-4 items-center pt-6 border-t border-stone-200",

@@ -265,7 +265,7 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
                 </div>
                 <div className="mt-8 p-4 bg-gold-50 border border-gold-200 rounded-xl max-w-md">
                     <p className="text-sm text-stone-700">
-                        <strong>¿No tienes cuenta?</strong> Regístrate gratis y obtén envío gratis en tu primera compra.
+                        <strong>¿Aún sin cuenta?</strong> Accede rápidamente con Google y obtén beneficios exclusivos en tu primera compra.
                     </p>
                 </div>
             </div>

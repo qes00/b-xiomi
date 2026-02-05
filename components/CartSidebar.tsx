@@ -99,7 +99,7 @@ export const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cart,
 const styles = {
   overlay: "fixed inset-0 bg-black/50 z-40 transition-opacity duration-300",
   sidebar: {
-    container: "fixed top-0 right-0 h-full w-[90%] sm:w-96 bg-bone shadow-2xl z-50 transform transition-transform duration-300 flex flex-col",
+    container: "fixed top-0 right-0 h-full w-[90%] sm:w-96 bg-white shadow-2xl z-50 transform transition-transform duration-300 flex flex-col",
     header: "p-5 border-b border-gold-400 flex justify-between items-center bg-gold-500",
     closeBtn: "p-2 hover:bg-black/10 rounded-full text-black",
     content: "flex-1 overflow-y-auto p-5 space-y-4",
