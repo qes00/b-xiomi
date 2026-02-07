@@ -35,3 +35,6 @@ config/api-keys.php
 # Local Netlify folder
 .netlify
 deploy-package.zip
+
+# Admin scripts (security - contains service role key usage)
+scripts/

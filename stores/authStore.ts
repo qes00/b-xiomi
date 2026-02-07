@@ -29,6 +29,7 @@ interface AuthState {
     // Actions
     initialize: () => Promise<void>;
     signInWithGoogle: () => Promise<{ success: boolean; error?: string }>;
+    signInWithPassword: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
     signOut: () => Promise<void>;
     clearError: () => void;
 
@@ -209,6 +210,47 @@ export const useAuthStore = create<AuthState>()(
                     return { success: true };
                 } catch (error) {
                     const message = error instanceof Error ? error.message : 'Error al iniciar sesión con Google';
+                    set({ isLoading: false, error: message });
+                    return { success: false, error: message };
+                }
+            },
+
+            signInWithPassword: async (email: string, password: string) => {
+                if (!isSupabaseConfigured() || !supabase) {
+                    const errorMsg = 'Supabase no configurado';
+                    set({ error: errorMsg, isLoading: false });
+                    return { success: false, error: errorMsg };
+                }
+
+                set({ isLoading: true, error: null });
+
+                try {
+                    const { data, error } = await supabase.auth.signInWithPassword({
+                        email,
+                        password,
+                    });
+
+                    if (error) {
+                        set({ isLoading: false, error: error.message });
+                        return { success: false, error: error.message };
+                    }
+
+                    if (data.user) {
+                        const profile = await fetchUserProfile(data.user.id);
+                        set({
+                            session: data.session,
+                            user: {
+                                id: data.user.id,
+                                email: data.user.email || '',
+                                ...profile,
+                            } as AuthUser,
+                            isLoading: false,
+                        });
+                    }
+
+                    return { success: true };
+                } catch (error) {
+                    const message = error instanceof Error ? error.message : 'Error al iniciar sesión';
                     set({ isLoading: false, error: message });
                     return { success: false, error: message };
                 }

@@ -61,6 +61,7 @@ const EditProductModal: React.FC<EditModalProps> = ({
         brand: product?.brand || '',
         lowStockThreshold: initialInventory?.lowStockThreshold || 10,
         isFeatured: product?.isFeatured || false,
+        isWhatsappOnly: product?.isWhatsappOnly || false,
     });
 
     const [images, setImages] = useState<ProductImage[]>(product?.images || []);
@@ -133,7 +134,7 @@ const EditProductModal: React.FC<EditModalProps> = ({
         } else {
             setVariantInventory([...variantInventory, {
                 id: Date.now().toString(),
-                productId: product.id,
+                productId: product?.id || 'new-product',
                 variantCombination: combo,
                 stock,
                 reserved: 0
@@ -144,6 +145,9 @@ const EditProductModal: React.FC<EditModalProps> = ({
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         const handleSave = () => {
+        console.log('📝 handleSubmit - variantInventory:', variantInventory);
+        console.log('📝 handleSubmit - totalVariantStock:', totalVariantStock);
+        
         const productToSave: Product = {
             id: product?.id || crypto.randomUUID(), // Temp ID for new, will be replaced by DB
             name: formData.name,
@@ -156,6 +160,7 @@ const EditProductModal: React.FC<EditModalProps> = ({
             sizes: variantTypes.find(vt => vt.name === 'Talla')?.values || [],
             colors: variantTypes.find(vt => vt.name === 'Color')?.values || [],
             isFeatured: formData.isFeatured,
+            isWhatsappOnly: formData.isWhatsappOnly,
         };
 
         const inventoryToSave: InventoryItem = {
@@ -166,6 +171,7 @@ const EditProductModal: React.FC<EditModalProps> = ({
             lastUpdated: new Date()
         };
 
+        console.log('📝 handleSubmit - inventoryToSave:', inventoryToSave);
         onSave(productToSave, inventoryToSave, variantTypes, variantInventory);
     };
         handleSave();
@@ -281,6 +287,19 @@ const EditProductModal: React.FC<EditModalProps> = ({
                                 <span className={styles.label}>⭐ Destacar en página principal</span>
                             </label>
                             <p className="text-xs text-stone-500 mt-1 ml-6">Los productos destacados aparecen en el carrusel de la landing page</p>
+                        </div>
+
+                        <div className="md:col-span-2">
+                            <label className="flex items-center gap-2 cursor-pointer">
+                                <input
+                                    type="checkbox"
+                                    checked={formData.isWhatsappOnly}
+                                    onChange={(e) => setFormData({ ...formData, isWhatsappOnly: e.target.checked })}
+                                    className="w-4 h-4 accent-[#25d366] cursor-pointer"
+                                />
+                                <span className={styles.label}>📲 Solo consultas por WhatsApp</span>
+                            </label>
+                            <p className="text-xs text-stone-500 mt-1 ml-6">El producto no podrá comprarse directamente, solo se muestra botón de WhatsApp</p>
                         </div>
                     </div>
 
@@ -678,6 +697,7 @@ export const InventoryManager: React.FC = () => {
                         <tr>
                             <th className={styles.th}>Producto</th>
                             <th className={styles.th}>Destacado</th>
+                            <th className={styles.th}>WhatsApp</th>
                             <th className={styles.th}>Imágenes</th>
                             <th className={styles.th}>Variantes</th>
                             <th className={styles.th}>Stock Total</th>
@@ -711,6 +731,13 @@ export const InventoryManager: React.FC = () => {
                                             <span className="text-gold-500 text-lg" title="Destacado en landing page">⭐</span>
                                         ) : (
                                             <span className="text-stone-300" title="No destacado">☆</span>
+                                        )}
+                                    </td>
+                                    <td className={styles.td}>
+                                        {product.isWhatsappOnly ? (
+                                            <span className="text-[#25d366] text-lg" title="Solo consultas por WhatsApp">📲</span>
+                                        ) : (
+                                            <span className="text-stone-300" title="Compra normal">🛒</span>
                                         )}
                                     </td>
                                     <td className={styles.td}>

@@ -17,6 +17,7 @@ export interface Product {
   sizes?: string[];
   colors?: string[];
   isFeatured?: boolean;
+  isWhatsappOnly?: boolean;
 }
 
 export interface CartItem extends Product {

@@ -40,6 +40,7 @@ const mapDBToProduct = (dbProduct: DBProduct): Product => {
         sizes: dbProduct.sizes || undefined,
         colors: dbProduct.colors || undefined,
         isFeatured: dbProduct.is_featured || false,
+        isWhatsappOnly: dbProduct.is_whatsapp_only || false,
     };
 };
 
@@ -62,6 +63,9 @@ const mapProductToDB = (product: Partial<Product>): DBProductInsert | DBProductU
     }
     if (product.isFeatured !== undefined) {
         dbProduct.is_featured = product.isFeatured;
+    }
+    if (product.isWhatsappOnly !== undefined) {
+        dbProduct.is_whatsapp_only = product.isWhatsappOnly;
     }
 
     return dbProduct;

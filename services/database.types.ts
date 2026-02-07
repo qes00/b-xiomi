@@ -266,6 +266,7 @@ export type Database = {
           image_url: string | null
           images: Json | null
           is_featured: boolean | null
+          is_whatsapp_only: boolean | null
           name: string
           price: number
           sizes: string[] | null
@@ -281,6 +282,7 @@ export type Database = {
           image_url?: string | null
           images?: Json | null
           is_featured?: boolean | null
+          is_whatsapp_only?: boolean | null
           name: string
           price: number
           sizes?: string[] | null
@@ -296,6 +298,7 @@ export type Database = {
           image_url?: string | null
           images?: Json | null
           is_featured?: boolean | null
+          is_whatsapp_only?: boolean | null
           name?: string
           price?: number
           sizes?: string[] | null

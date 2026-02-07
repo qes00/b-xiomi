@@ -72,19 +72,25 @@ export const getAllInventory = async (): Promise<InventoryItem[]> => {
  * Actualizar stock de un producto
  */
 export const updateInventory = async (productId: string, stock: number): Promise<InventoryItem | null> => {
+    console.log('📦 updateInventory called:', { productId, stock });
+    
     if (!isSupabaseConfigured() || !supabase) {
+        console.warn('⚠️ Supabase not configured, skipping inventory update');
         return null;
     }
 
     // Verificar si existe el registro
-    const { data: existing } = await supabase
+    const { data: existing, error: checkError } = await supabase
         .from('inventory')
         .select('id')
         .eq('product_id', productId)
         .single();
 
+    console.log('📦 Existing inventory check:', { existing, checkError });
+
     if (existing) {
         // Actualizar
+        console.log('📦 Updating existing inventory...');
         const { data, error } = await supabase
             .from('inventory')
             .update({
@@ -96,13 +102,15 @@ export const updateInventory = async (productId: string, stock: number): Promise
             .single();
 
         if (error) {
-            console.error('Error actualizando inventario:', handleSupabaseError(error));
+            console.error('❌ Error actualizando inventario:', handleSupabaseError(error));
             return null;
         }
 
+        console.log('✅ Inventory updated successfully:', data);
         return data ? mapDBToInventory(data) : null;
     } else {
         // Crear nuevo
+        console.log('📦 Creating new inventory record...');
         const { data, error } = await supabase
             .from('inventory')
             .insert({
@@ -113,10 +121,11 @@ export const updateInventory = async (productId: string, stock: number): Promise
             .single();
 
         if (error) {
-            console.error('Error creando inventario:', handleSupabaseError(error));
+            console.error('❌ Error creando inventario:', handleSupabaseError(error));
             return null;
         }
 
+        console.log('✅ Inventory created successfully:', data);
         return data ? mapDBToInventory(data) : null;
     }
 };
