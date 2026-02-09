@@ -2,7 +2,7 @@ import React, { useState, useMemo, useEffect } from 'react';
 import { InventoryItem, Product, VariantType, VariantInventory, ProductImage } from '../../types';
 import { formatCurrency } from '../../constants';
 import { Button } from '../Button';
-import { getProducts, updateProduct } from '../../services/productService';
+import { getProducts, updateProduct, createProduct } from '../../services/productService';
 import { getAllInventory, updateInventory } from '../../services/inventoryService';
 
 
